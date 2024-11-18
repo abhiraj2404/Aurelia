@@ -12,6 +12,7 @@ import {
   DropdownTrigger,
 } from "@nextui-org/dropdown";
 import { useActiveAccount } from "thirdweb/react";
+import { sendTransaction } from "thirdweb";
 
 export default function CollectionsPage() {
   // const nfts = [
@@ -64,10 +65,11 @@ export default function CollectionsPage() {
   const [nfts, setNfts] = useState<NFT[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filter, setFilter] = useState("all");
-  const activeAccount = useActiveAccount();
-  console.log("Active account:", activeAccount);
+  const account = useActiveAccount();
 
-  console.log("User address:", activeAccount?.address);
+  console.log("Active account:", account);
+
+  console.log("User address:", account?.address);
 
   useEffect(() => {
     async function fetchNFTs() {
@@ -115,10 +117,22 @@ export default function CollectionsPage() {
 
       const mintRequest = await fetch("/api/mintNFT", {
         method: "POST",
-        body: JSON.stringify({ voucher, account: activeAccount }),
+        body: JSON.stringify({ voucher, account }),
       });
       const mintResponse = await mintRequest.json();
-      console.log("Minting response:", mintResponse);
+      const transaction = mintResponse.transaction;
+      console.log("transaction - " , transaction);
+
+      if (account) {
+        const { transactionHash } = await sendTransaction({
+          account,
+          transaction,
+        });
+        console.log(
+          "Minting successfull , transaction hash :",
+          transactionHash
+        );
+      }
     } catch (error) {
       console.error("Error during Buy Now process:", error);
     }

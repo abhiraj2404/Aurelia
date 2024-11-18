@@ -3,11 +3,9 @@ import { NextRequest, NextResponse } from "next/server";
 
 const SIGN_DOMAIN = "IIIT SRICITY";
 const SIGN_VERSION = "1";
-const chainId = 1;
+const chainId = 421614;
 const contractAddress = process.env.CONTRACT_ADDRESS; // Put the address here from remix
-const signer = new ethers.Wallet(
-  process.env.PRIVATE_KEY as string
-); // private key that I use for address 0x5B38Da6a701c568545dCfcB03FcB875f56beddC4
+const signer = new ethers.Wallet(process.env.PRIVATE_KEY as string); // private key that I use for address 0x5B38Da6a701c568545dCfcB03FcB875f56beddC4
 
 const domain = {
   name: SIGN_DOMAIN,

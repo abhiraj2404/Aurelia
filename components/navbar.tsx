@@ -28,11 +28,9 @@ import {
   Logo,
 } from "@/components/icons";
 import { useState } from "react";
-import { client, chain } from "@/config/client";
+import { client, chain, wallets } from "@/config/client";
 
 export const Navbar = () => {
-
-  
   const searchInput = (
     <Input
       aria-label="Search"
@@ -92,14 +90,7 @@ export const Navbar = () => {
         </NavbarItem>
         <NavbarItem className="hidden lg:flex">{searchInput}</NavbarItem>
         <NavbarItem className="hidden md:flex">
-          <ConnectButton
-            client={client}
-            chain={chain}
-            accountAbstraction={{
-              chain: chain, // the chain where your smart accounts will be or is deployed
-              sponsorGas: true, // enable or disable sponsored transactions
-            }}
-          />
+          <ConnectButton client={client} chain={chain} wallets={wallets} />
         </NavbarItem>
       </NavbarContent>
 

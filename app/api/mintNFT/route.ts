@@ -6,7 +6,7 @@ import { chain, client } from "@/config/client";
 
 // Replace with your actual contract address and private key
 const CONTRACT_ADDRESS = process.env.CONTRACT_ADDRESS;
-const PRIVATE_KEY = process.env.PRIVATE_KEY // Use an environment variable for security
+const PRIVATE_KEY = process.env.PRIVATE_KEY; // Use an environment variable for security
 const RPC_URL = "https://sepolia-rollup.arbitrum.io/rpc"; // Arbitrum Sepolia RPC URL
 
 export async function POST(req: NextRequest, res: NextResponse) {
@@ -766,7 +766,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
 
     // Extract voucher from request body
     const { voucher, account } = await req.json();
-    console.log(voucher, account);
+    console.log("account got in backend = ", account);
 
     if (!voucher || !account) {
       return NextResponse.json(
@@ -788,15 +788,12 @@ export async function POST(req: NextRequest, res: NextResponse) {
       params: [voucher, account.address],
     });
 
+    
     console.log("Minting NFT with transaction:", transaction);
-
-    const { transactionHash } = await sendTransaction({
-      account: account.address,
-      transaction,
-    });
+    
 
     return NextResponse.json(
-      { message: "Minting successful", transaction: transactionHash },
+      { message: "here is your transaction", transaction },
       { status: 200 }
     );
   } catch (error) {
