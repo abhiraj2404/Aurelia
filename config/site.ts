@@ -13,8 +13,8 @@ export const siteConfig = {
       href: "/collections",
     },
     {
-      label: "About",
-      href: "/about",
+      label: "myNFTs",
+      href: "/myNFTs",
     },
   ],
   navMenuItems: [
@@ -27,12 +27,12 @@ export const siteConfig = {
       href: "/collections",
     },
     {
-      label: "About",
-      href: "/about",
+      label: "myNFTs",
+      href: "/myNFTs",
     },
   ],
   links: {
-    github: "https://github.com/nextui-org/nextui",
+    github: "https://github.com/abhiraj2404/college_memories",
     twitter: "https://twitter.com/getnextui",
     docs: "https://nextui.org",
     discord: "https://discord.gg/9b6yyZKmH4",

@@ -12,8 +12,8 @@ import {
   DropdownTrigger,
 } from "@nextui-org/dropdown";
 import { useActiveAccount } from "thirdweb/react";
-import { sendTransaction , prepareContractCall} from "thirdweb";
-import { chain, client ,contract} from "@/config/client";
+import { sendTransaction, prepareContractCall } from "thirdweb";
+import { chain, client, contract } from "@/config/client";
 
 export default function CollectionsPage() {
   // const nfts = [
@@ -67,7 +67,7 @@ export default function CollectionsPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filter, setFilter] = useState("all");
   const account = useActiveAccount();
-  const address=useActiveAccount()?.address;
+  const address = useActiveAccount()?.address;
   console.log("Active account:", account);
 
   console.log("User address:", account?.address);
@@ -100,7 +100,7 @@ export default function CollectionsPage() {
   const handleBuyNow = async (nft: any, index: any) => {
     try {
       const data = {
-        tokenId: index,
+        tokenId: parseInt(nft.name.split("#")[1], 10),
         studentName: nft.name,
         uri: nft.image,
       };
@@ -112,19 +112,16 @@ export default function CollectionsPage() {
       if (!uploadRequest.ok) {
         throw new Error("Failed to fetch voucher");
       }
-      
 
       const voucher = await uploadRequest.json();
       console.log("Voucher received:", voucher);
       const transaction = prepareContractCall({
         contract,
         method: "safeMint",
-        params: [voucher,String(address)],
+        params: [voucher, String(address)],
       });
-  
 
       if (account) {
-        
         const { transactionHash } = await sendTransaction({
           account,
           transaction,

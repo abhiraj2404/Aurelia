@@ -90,7 +90,14 @@ export const Navbar = () => {
         </NavbarItem>
         <NavbarItem className="hidden lg:flex">{searchInput}</NavbarItem>
         <NavbarItem className="hidden md:flex">
-          <ConnectButton client={client} chain={chain}  />
+          <ConnectButton
+            client={client}
+            chain={chain}
+            accountAbstraction={{
+              chain: chain,
+              sponsorGas: true,
+            }}
+          />
         </NavbarItem>
       </NavbarContent>
 

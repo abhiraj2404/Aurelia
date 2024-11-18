@@ -1,9 +1,11 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { pinata } from "@/utils/config";
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 
 export async function GET(req: NextApiRequest, res: NextApiResponse) {
   try {
+    const _cookies = cookies();
     const { files } = await pinata.files.list(); // Get list of files
     console.log("Files:", files);
     const jsonFiles = files.filter((file) => file.name?.endsWith(".json"));

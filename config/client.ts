@@ -11,7 +11,7 @@ const client = createThirdwebClient({
   clientId: clientId,
 });
 const contract = getContract({
-  address: "0xd041589404A1978b3C4bdc3E28928C48c1e19CA8",
+  address: "0x67C780648E0e2cc2b36FbCec46ABf64c34A95412",
   client: client,
   chain: chain,
   abi: [
@@ -754,6 +754,7 @@ const contract = getContract({
   ],
 });
 
+
 const wallets = [
   inAppWallet({
     smartAccount: {
@@ -762,4 +763,4 @@ const wallets = [
     },
   }),
 ];
-export { client, chain, wallets ,contract};
+export { client, chain, wallets, contract };
