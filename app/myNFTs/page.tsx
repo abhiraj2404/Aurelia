@@ -61,7 +61,9 @@ export default function MyNFTsPage() {
         />
         <div>
           <h1 className="text-2xl font-bold">Unnamed</h1>
-          <p className="text-default-500 font-mono">{address}</p>
+          <p className="text-default-500 font-mono">
+            {address ? address : "Connect your wallet"}
+          </p>
         </div>
       </div>
 
