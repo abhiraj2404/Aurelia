@@ -24,6 +24,7 @@ import { client, chain } from "@/config/client";
 import { usePathname } from "next/navigation";
 
 export const Navbar = () => {
+  const pathname = usePathname(); // Get current route path
   const searchInput = (
     <Input
       aria-label="Search"
@@ -106,8 +107,7 @@ export const Navbar = () => {
         {searchInput}
         <div className="mx-4 mt-2 flex flex-col gap-2">
           {siteConfig.navMenuItems.map((item, index) => {
-            const pathname = usePathname(); // Get current route path
-            const isActive = pathname === item.href; // Compare with item href
+            const isActive = pathname === item.href; 
 
             return (
               <NavbarMenuItem key={`${item}-${index}`}>
@@ -115,8 +115,8 @@ export const Navbar = () => {
                   href={item.href}
                   className={`text-lg ${
                     isActive
-                      ? "text-primary font-semibold" // Highlight active link
-                      : "text-foreground" // Default link style
+                      ? "text-primary font-semibold" 
+                      : "text-foreground" 
                   }`}
                 >
                   {item.label}
