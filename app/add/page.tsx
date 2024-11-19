@@ -2,17 +2,17 @@
 
 import { useRef, useState } from "react";
 import { Button } from "@nextui-org/button";
-import { Card, CardBody, CardFooter } from "@nextui-org/card";
-import { Image } from "@nextui-org/image";
+import { Card, CardBody } from "@nextui-org/card";
 import { Input, Textarea } from "@nextui-org/input";
 import { Upload } from "lucide-react";
 import { Select, SelectItem } from "@nextui-org/select";
-import { sign } from "crypto";
+import { useRouter } from "next/navigation";
 
 export default function AddPage() {
   const [file, setFile] = useState<File>();
   const [url, setUrl] = useState("");
   const [uploading, setUploading] = useState(false);
+  const router = useRouter();
 
   const uploadFile = async () => {
     try {
@@ -105,22 +105,13 @@ export default function AddPage() {
       };
 
       await uploadMetadata(metadata);
-
-      // Handle form submission here
       console.log("Form submitted:", formData);
+      router.push("/collections");
     }
   };
 
   return (
-    // <main className="w-full min-h-screen m-auto flex flex-col justify-center items-center">
-    //   <input type="file" onChange={handleChange} />
-    //   <button type="button" disabled={uploading} onClick={uploadFile}>
-    //     {uploading ? "Uploading..." : "Upload"}
-    //   </button>
-    //   {/* Add a conditional looking for the signed url and use it as the source */}
-    //   {url && <img src={url} alt="Image from Pinata" />}
-    // </main>
-    <div className="max-w-4xl mx-auto p-4 md:p-6">
+    <div className="max-w-4xl mx-auto p-4 md:p-6 flex-grow">
       <h1 className="text-4xl font-bold mb-2">Create an NFT</h1>
       <p className="text-default-500 mb-8">
         Once your item is minted you will not be able to change any of its
@@ -131,7 +122,7 @@ export default function AddPage() {
         <Card>
           <CardBody className="gap-6">
             {/* Image Upload Section */}
-            <div
+            <button
               className="border-2 border-dashed rounded-lg p-8 text-center cursor-pointer"
               onClick={() => fileInputRef.current?.click()}
             >
@@ -176,7 +167,7 @@ export default function AddPage() {
                 accept="image/*,video/mp4"
                 onChange={handleImageUpload}
               />
-            </div>
+            </button>
 
             {/* Collection Selection */}
             <Select

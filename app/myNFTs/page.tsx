@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { Button } from "@nextui-org/button";
 import { Card, CardBody, CardFooter } from "@nextui-org/card";
-import { Image } from "@nextui-org/image";
 import { Input } from "@nextui-org/input";
 import {
   Dropdown,
@@ -11,7 +10,7 @@ import {
   DropdownMenu,
   DropdownTrigger,
 } from "@nextui-org/dropdown";
-import { Search, Grid, List, LayoutGrid, Settings } from "lucide-react";
+import { Search, List, LayoutGrid, Settings } from "lucide-react";
 import { Avatar } from "@nextui-org/avatar";
 import { useActiveAccount } from "thirdweb/react";
 
@@ -34,10 +33,16 @@ const mockNFTs = [
     description: "Group photo with classmates",
     image: "/placeholder.svg?height=400&width=400",
   },
+  {
+    id: 4,
+    name: "Farewell Party #013",
+    description: "Group photo with classmates",
+    image: "/placeholder.svg?height=400&width=400",
+  },
   // Add more NFTs as needed
 ];
 
-function myCollections() {
+export default function MyNFTsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const address = useActiveAccount()?.address;
@@ -47,7 +52,7 @@ function myCollections() {
   );
 
   return (
-    <div className="min-h-screen bg-background p-8">
+    <div className="flex-grow bg-background p-8">
       {/* Profile Section */}
       <div className="flex items-center gap-4 mb-8">
         <Avatar
@@ -61,7 +66,7 @@ function myCollections() {
       </div>
 
       {/* Search and Filters */}
-      <div className="flex flex-col sm:flex-row gap-4 mb-8 justify-between items-start sm:items-center">
+      <div className="flex flex-col my-10 lg:mx-20 sm:flex-row gap-4 mb-8 justify-between items-start sm:items-center">
         <Input
           placeholder="Search your NFTs..."
           value={searchQuery}
@@ -101,7 +106,7 @@ function myCollections() {
 
       {/* NFT Grid */}
       <div
-        className={`grid gap-6 ${
+        className={`grid gap-10 my-10 lg:mx-20 ${
           viewMode === "grid"
             ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
             : "grid-cols-1"
@@ -139,5 +144,3 @@ function myCollections() {
     </div>
   );
 }
-
-export default myCollections;

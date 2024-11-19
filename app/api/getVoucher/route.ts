@@ -26,6 +26,5 @@ export async function POST(req: NextRequest, res: NextResponse) {
   };
 
   const signature = await signer.signTypedData(domain, types, voucher);
-  console.log("Signature:", signature);
   return NextResponse.json({ ...voucher, signature }, { status: 200 });
 }

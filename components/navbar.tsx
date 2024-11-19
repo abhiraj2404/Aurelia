@@ -1,6 +1,6 @@
 "use client";
+
 import { ConnectButton } from "thirdweb/react";
-import { sepolia } from "thirdweb/chains";
 import {
   Navbar as NextUINavbar,
   NavbarContent,
@@ -20,15 +20,10 @@ import clsx from "clsx";
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
 import {
-  TwitterIcon,
   GithubIcon,
-  DiscordIcon,
-  HeartFilledIcon,
   SearchIcon,
-  Logo,
 } from "@/components/icons";
-import { useState } from "react";
-import { client, chain, wallets } from "@/config/client";
+import { client, chain } from "@/config/client";
 
 export const Navbar = () => {
   const searchInput = (

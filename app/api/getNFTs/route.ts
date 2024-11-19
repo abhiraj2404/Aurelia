@@ -1,18 +1,16 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { pinata } from "@/utils/config";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
-export async function GET(req: NextApiRequest, res: NextApiResponse) {
+export async function GET(req: NextRequest, res: NextResponse) {
   try {
     const _cookies = cookies();
     const { files } = await pinata.files.list(); // Get list of files
-    console.log("Files:", files);
     const jsonFiles = files.filter((file) => file.name?.endsWith(".json"));
 
     const metadataPromises = jsonFiles.map(async (file) => {
-      const { data, contentType } = await pinata.gateways.get(`${file.cid}`);
-      console.log("Data:", data);
+      const { data } = await pinata.gateways.get(`${file.cid}`);
       return data;
     });
 

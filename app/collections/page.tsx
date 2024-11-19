@@ -14,52 +14,14 @@ import {
 import { useActiveAccount } from "thirdweb/react";
 import { sendTransaction, prepareContractCall } from "thirdweb";
 import { chain, client, contract } from "@/config/client";
+import { Spinner } from "@nextui-org/spinner";
 
 export default function CollectionsPage() {
-  // const nfts = [
-
-  //   {
-  //     id: 1,
-  //     name: "Cool Cat #1",
-  //     price: "0.5 ETH",
-  //     image: "/placeholder.svg?height=400&width=400",
-  //   },
-  //   {
-  //     id: 2,
-  //     name: "Bored Ape #42",
-  //     price: "2.5 ETH",
-  //     image: "/placeholder.svg?height=400&width=400",
-  //   },
-  //   {
-  //     id: 3,
-  //     name: "Crypto Punk #007",
-  //     price: "5 ETH",
-  //     image: "/placeholder.svg?height=400&width=400",
-  //   },
-  //   {
-  //     id: 4,
-  //     name: "Doodle #123",
-  //     price: "0.8 ETH",
-  //     image: "/placeholder.svg?height=400&width=400",
-  //   },
-  //   {
-  //     id: 5,
-  //     name: "Azuki #456",
-  //     price: "1.2 ETH",
-  //     image: "/placeholder.svg?height=400&width=400",
-  //   },
-  //   {
-  //     id: 6,
-  //     name: "World of Women #789",
-  //     price: "0.6 ETH",
-  //     image: "/placeholder.svg?height=400&width=400",
-  //   },
-  // ];
-
   interface NFT {
     id: number;
     name: string;
     price: string;
+    description: string;
     image: string;
   }
 
@@ -68,7 +30,6 @@ export default function CollectionsPage() {
   const [filter, setFilter] = useState("all");
   const account = useActiveAccount();
   const address = useActiveAccount()?.address;
-  console.log("Active account:", account);
 
   console.log("User address:", account?.address);
 
@@ -137,8 +98,8 @@ export default function CollectionsPage() {
   };
 
   return (
-    <div>
-      <main className="flex-grow">
+    <div className="flex-grow">
+      <main>
         {/* Hero Section */}
         <div
           className="h-80 bg-cover bg-center flex items-center justify-center"
@@ -192,34 +153,40 @@ export default function CollectionsPage() {
           </div>
 
           {/* NFT Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-12">
-            {filteredNFTs.map((nft, index) => (
-              <Card
-                key={index}
-                className="max-w-[300px] transition-all hover:scale-105 hover:shadow-lg"
-              >
-                <CardBody className="p-0">
-                  <Image
-                    src={nft.image}
-                    alt={nft.name}
-                    width="100%"
-                    height={200}
-                  />
-                </CardBody>
-                <CardFooter className="flex-col items-start">
-                  <h4 className="font-bold text-large">{nft.name}</h4>
-                  <p className="text-default-500">{nft.price} ETH</p>
-                  <Button
-                    className="w-full mt-2 transition-colors hover:bg-primary-400"
-                    color="primary"
-                    onClick={() => handleBuyNow(nft, index)}
-                  >
-                    Buy Now
-                  </Button>
-                </CardFooter>
-              </Card>
-            ))}
-          </div>
+          {nfts.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-12">
+              {filteredNFTs.map((nft, index) => (
+                <Card
+                  key={index}
+                  className="max-w-[300px] transition-all hover:scale-105 hover:shadow-lg"
+                >
+                  <CardBody className="p-0">
+                    <Image
+                      src={nft.image}
+                      alt={nft.name}
+                      width="100%"
+                      height={200}
+                    />
+                  </CardBody>
+                  <CardFooter className="flex-col items-start">
+                    <h4 className="font-bold text-large">{nft.name}</h4>
+                    <p className="text-default-500">{nft.description}</p>
+                    <Button
+                      className="w-full mt-2 transition-colors hover:bg-primary-400"
+                      color="primary"
+                      onClick={() => handleBuyNow(nft, index)}
+                    >
+                      Buy Now
+                    </Button>
+                  </CardFooter>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <div className="py-12 w-full flex justify-center">
+              <Spinner />
+            </div>
+          )}
         </div>
       </main>
     </div>

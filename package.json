@@ -22,6 +22,7 @@
     "@nextui-org/navbar": "2.0.37",
     "@nextui-org/select": "^2.2.7",
     "@nextui-org/snippet": "2.0.43",
+    "@nextui-org/spinner": "^2.0.34",
     "@nextui-org/switch": "2.0.34",
     "@nextui-org/system": "2.2.6",
     "@nextui-org/theme": "2.2.11",
@@ -35,6 +36,7 @@
     "next": "14.2.4",
     "next-themes": "^0.2.1",
     "pinata": "^1.8.1",
+    "pino-pretty": "^13.0.0",
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "thirdweb": "^5.68.0"

@@ -16,7 +16,6 @@ export async function POST(request: NextRequest) {
         },
       })
       .group("01933bba-e1df-7077-a3f1-9bb5192060f0");
-    console.log(uploadData);
 
     const url = `https://${process.env.PINATA_GATEWAY_URL}/files/${uploadData.cid}`;
     return NextResponse.json(url, { status: 200 });
