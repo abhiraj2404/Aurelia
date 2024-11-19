@@ -92,6 +92,8 @@ export default function CollectionsPage() {
           transactionHash
         );
         alert("Minting successfull , check your wallet for transaction status");
+      } else {
+        alert("Please connect your wallet to mint the NFT");
       }
     } catch (error) {
       console.error("Error during Buy Now process:", error);

@@ -19,11 +19,9 @@ import clsx from "clsx";
 
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
-import {
-  GithubIcon,
-  SearchIcon,
-} from "@/components/icons";
+import { GithubIcon, SearchIcon } from "@/components/icons";
 import { client, chain } from "@/config/client";
+import { usePathname } from "next/navigation";
 
 export const Navbar = () => {
   const searchInput = (
@@ -107,23 +105,25 @@ export const Navbar = () => {
       <NavbarMenu>
         {searchInput}
         <div className="mx-4 mt-2 flex flex-col gap-2">
-          {siteConfig.navMenuItems.map((item, index) => (
-            <NavbarMenuItem key={`${item}-${index}`}>
-              <Link
-                color={
-                  index === 2
-                    ? "primary"
-                    : index === siteConfig.navMenuItems.length - 1
-                      ? "danger"
-                      : "foreground"
-                }
-                href={item.href}
-                size="lg"
-              >
-                {item.label}
-              </Link>
-            </NavbarMenuItem>
-          ))}
+          {siteConfig.navMenuItems.map((item, index) => {
+            const pathname = usePathname(); // Get current route path
+            const isActive = pathname === item.href; // Compare with item href
+
+            return (
+              <NavbarMenuItem key={`${item}-${index}`}>
+                <Link
+                  href={item.href}
+                  className={`text-lg ${
+                    isActive
+                      ? "text-primary font-semibold" // Highlight active link
+                      : "text-foreground" // Default link style
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              </NavbarMenuItem>
+            );
+          })}
         </div>
         <ConnectButton
           client={client}
