@@ -13,7 +13,7 @@ import {
 } from "@nextui-org/dropdown";
 import { useActiveAccount } from "thirdweb/react";
 import { sendTransaction, prepareContractCall } from "thirdweb";
-import { chain, client, contract } from "@/config/client";
+import { contract } from "@/config/client";
 import { Spinner } from "@nextui-org/spinner";
 
 export default function CollectionsPage() {
@@ -95,8 +95,13 @@ export default function CollectionsPage() {
       } else {
         alert("Please connect your wallet to mint the NFT");
       }
-    } catch (error) {
-      console.error("Error during Buy Now process:", error);
+    } catch (error: any) {
+      if (error.message.toLowerCase().includes("invalidsender")) {
+        alert("NFT has already been bought. Try another one.");
+      } else {
+        alert("Error during buy now process");
+      }
+      console.log("Error during buy now process", error);
     }
   };
 
