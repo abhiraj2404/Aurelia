@@ -91,6 +91,7 @@ export default function CollectionsPage() {
           "Minting successfull , transaction hash :",
           transactionHash
         );
+        alert("Minting successfull , check your wallet for transaction status");
       }
     } catch (error) {
       console.error("Error during Buy Now process:", error);
