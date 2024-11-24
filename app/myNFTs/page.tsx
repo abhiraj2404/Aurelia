@@ -13,13 +13,10 @@ import {
 import { Search, List, LayoutGrid, Settings } from "lucide-react";
 import { Avatar } from "@nextui-org/avatar";
 import { useActiveAccount } from "thirdweb/react";
-import { sendTransaction, prepareContractCall } from "thirdweb";
 import { useReadContract } from "thirdweb/react";
 import { contract } from "@/config/client";
 import axios from "axios";
 import { Spinner } from "@nextui-org/spinner";
-import { Image } from "@nextui-org/image";
-
 
 const mockNFTs = [
   {
@@ -63,6 +60,7 @@ export default function MyNFTsPage() {
   const [ownedNfts, setOwnedNfts] = useState<any>();
   const address = useActiveAccount()?.address;
   const [nfts, setNfts] = useState<NFT[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const { data, isLoading } = useReadContract({
     contract,
@@ -71,28 +69,35 @@ export default function MyNFTsPage() {
   });
 
   useEffect(() => {
-    if(data) setOwnedNfts(data);
-  },[data])
+    if (data) setOwnedNfts(data);
+    setLoading(false);
+  }, [data]);
 
-  const fetch = async() => {
+  const fetch = async () => {
     try {
-      const response = await axios.get('/api/getOwnedNFTs', {
-          params: {
-            tokenURLs: JSON.stringify(ownedNfts),
-          },
+      const response = await axios.get("/api/getOwnedNFTs", {
+        params: {
+          tokenURLs: JSON.stringify(ownedNfts),
+        },
       });
-      
+
       setNfts(response.data);
+      setLoading(false);
     } catch (error) {
-        console.error('Error fetching metadata:', error);
+      console.error("Error fetching metadata:", error);
     }
-  }
+  };
 
   useEffect(() => {
-    if(ownedNfts) {
+    if (ownedNfts) {
       fetch();
     }
-  },[ownedNfts])
+    setLoading(false);
+  }, [ownedNfts]);
+
+  const filteredNFTs = nfts.filter((nft) =>
+    nft.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <div className="flex-grow bg-background p-8">
@@ -150,31 +155,54 @@ export default function MyNFTsPage() {
       </div>
 
       {/* NFT Grid */}
-      {nfts.length > 0 ? (
-        <div className="flex gap-12">
-          {nfts.map((nft, index) => (
-            <Card
-              key={index}
-              className="max-w-[300px] transition-all hover:scale-105 hover:shadow-lg"
-            >
-              <CardBody className="p-0">
-                <Image
-                  src={nft.image}
-                  alt={nft.name}
-                  width="100%"
-                  height={200}
-                />
-              </CardBody>
-              <CardFooter className="flex-col items-start">
-                <h4 className="font-bold text-large">{nft.name}</h4>
-                <p className="text-default-500">{nft.description}</p>
-              </CardFooter>
-            </Card>
-          ))}
-        </div>
+      <div
+        className={`grid gap-10 my-10 lg:mx-20 ${
+          viewMode === "grid"
+            ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+            : "grid-cols-1"
+        }`}
+      >
+        {filteredNFTs.map((nft, index) => (
+          <Card
+            key={index}
+            className="hover:scale-105 transition-transform"
+            isPressable
+          >
+            <CardBody className="p-0">
+              <img
+                src={nft.image}
+                alt={nft.name}
+                className={`w-full ${viewMode === "grid" ? "h-[300px]" : "h-[200px]"} object-cover`}
+              />
+            </CardBody>
+            <CardFooter className="flex flex-col items-start">
+              <h3 className="text-lg font-semibold">{nft.name}</h3>
+              <p className="text-default-500">{nft.description}</p>
+            </CardFooter>
+          </Card>
+        ))}
+      </div>
+
+      {/* empty state  */}
+      {address ? (
+        loading ? (
+          <div className="text-center py-12">
+            <Spinner />
+          </div>
+        ) : (
+          filteredNFTs.length === 0 && (
+            <div className="text-center py-12">
+              <p className="text-default-500">
+                No NFTs found matching your search.
+              </p>
+            </div>
+          )
+        )
       ) : (
-        <div className="py-12 w-full flex justify-center">
-          <Spinner />
+        <div className="text-center py-12">
+          <p className="text-default-500">
+            Connect your wallet to view your NFTs
+          </p>
         </div>
       )}
     </div>

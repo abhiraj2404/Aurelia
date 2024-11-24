@@ -27,7 +27,7 @@ export default function AddPage() {
     { label: "Collection 2", value: "collection2" },
   ];
 
-    const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       setFile(e.target?.files?.[0]);
@@ -46,7 +46,6 @@ export default function AddPage() {
         return;
       }
 
-      setUploading(true);
       const data = new FormData();
       data.set("file", file, formData.name);
       const uploadRequest = await fetch("/api/files", {
@@ -55,7 +54,6 @@ export default function AddPage() {
       });
       const signedUrl = await uploadRequest.json();
       setUrl(signedUrl);
-      setUploading(false);
       return signedUrl;
     } catch (e) {
       console.log(e);
@@ -94,6 +92,7 @@ export default function AddPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setUploading(true);
     const imageURL = await uploadFile();
     if (imageURL) {
       const metadata = {
@@ -104,6 +103,7 @@ export default function AddPage() {
       };
 
       await uploadMetadata(metadata);
+      setUploading(false);
       console.log("Form submitted:", formData);
       router.push("/collections");
     }

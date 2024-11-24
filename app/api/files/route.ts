@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
 
     const url = `https://${process.env.PINATA_GATEWAY_URL}/ipfs/${uploadData.IpfsHash}`;
 
-    await pinata
+    const pinjob = await pinata
       .pinJobs()
       .cid(`${uploadData.IpfsHash}`)
 
