@@ -8,8 +8,6 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol"; // Import ECDSA for signature recovery
-import { PinataSDK } from "pinata";
-
 
 contract LazyMint is ERC721, ERC721URIStorage, ERC721Enumerable, Ownable, EIP712 {
     using ECDSA for bytes32;
@@ -108,12 +106,12 @@ contract LazyMint is ERC721, ERC721URIStorage, ERC721Enumerable, Ownable, EIP712
         revert("its a soulbound token");
     }
 
-    function getAllOwnednFTs() public view returns(string[] memory) {
-        uint256 ownedNum = balanceOf(msg.sender);
+    function getAllOwnedNfts(address _addr) public view returns(string[] memory) {
+        uint256 ownedNum = balanceOf(_addr);
         string[] memory tokenIds = new string[](ownedNum);
 
         for(uint256 i=0;i<ownedNum;i++) {
-            tokenIds[i] = tokenOfOwnerByIndex(msg.sender, i);
+            tokenIds[i] = tokenURI(tokenOfOwnerByIndex(_addr, i));
         }
 
         return tokenIds;
