@@ -4,14 +4,19 @@ import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
 export async function GET(req: NextRequest, res: NextResponse) {
-  try {
+  try {  
     const _cookies = cookies();
-    const { files } = await pinata.files.list(); // Get list of files
-    const jsonFiles = files.filter((file) => file.name?.endsWith(".json"));
+    const files = await pinata.listFiles().group('2c83451b-83a7-416c-b21b-7ba3fa3547d7'); // Get list of files
+    const jsonFiles = files.filter((file) => file.metadata.name?.endsWith(".json"));
 
     const metadataPromises = jsonFiles.map(async (file) => {
-      const { data } = await pinata.gateways.get(`${file.cid}`);
-      return data;
+      const { data } = await pinata.gateways.get(`${file.ipfs_pin_hash}`);
+      if (data && typeof data === 'object' && !Array.isArray(data)) {
+        return {
+          ...data!,
+          metaUrl: `https://${process.env.PINATA_GATEWAY_URL}/ipfs/${file.ipfs_pin_hash}`
+        };
+      }
     });
 
     const metadataFiles = await Promise.all(metadataPromises);

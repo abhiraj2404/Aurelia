@@ -3,13 +3,16 @@
 pragma solidity ^0.8.22;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol"; // Import ECDSA for signature recovery
+import { PinataSDK } from "pinata";
 
-contract LazyMint is ERC721, ERC721URIStorage, Ownable, EIP712 {
-    using ECDSA for bytes32; // Use ECDSA functions like recover
+
+contract LazyMint is ERC721, ERC721URIStorage, ERC721Enumerable, Ownable, EIP712 {
+    using ECDSA for bytes32;
 
     string private constant SIGN_DOMAIN = "IIIT SRICITY";
     string private constant SIGN_VERSION = "1";
@@ -57,6 +60,19 @@ contract LazyMint is ERC721, ERC721URIStorage, Ownable, EIP712 {
         _setTokenURI(voucher.tokenId, voucher.uri);
     }
 
+    function _increaseBalance(address account, uint128 value) internal override(ERC721, ERC721Enumerable) {
+        super._increaseBalance(account, value);
+    }
+
+    function _update(address to, uint256 tokenId, address auth)
+        internal
+        virtual
+        override(ERC721, ERC721Enumerable)
+        returns (address)
+    {
+        return super._update(to, tokenId, auth);
+    }
+
     function tokenURI(uint256 tokenId)
         public
         view
@@ -69,7 +85,7 @@ contract LazyMint is ERC721, ERC721URIStorage, Ownable, EIP712 {
     function supportsInterface(bytes4 interfaceId)
         public
         view
-        override(ERC721, ERC721URIStorage)
+        override(ERC721, ERC721URIStorage, ERC721Enumerable)
         returns (bool)
     {
         return super.supportsInterface(interfaceId);
@@ -90,5 +106,16 @@ contract LazyMint is ERC721, ERC721URIStorage, Ownable, EIP712 {
         uint256 tokenId
     ) public override(ERC721, IERC721) {
         revert("its a soulbound token");
+    }
+
+    function getAllOwnednFTs() public view returns(string[] memory) {
+        uint256 ownedNum = balanceOf(msg.sender);
+        string[] memory tokenIds = new string[](ownedNum);
+
+        for(uint256 i=0;i<ownedNum;i++) {
+            tokenIds[i] = tokenOfOwnerByIndex(msg.sender, i);
+        }
+
+        return tokenIds;
     }
 }

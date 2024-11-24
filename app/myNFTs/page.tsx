@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@nextui-org/button";
 import { Card, CardBody, CardFooter } from "@nextui-org/card";
 import { Input } from "@nextui-org/input";
@@ -13,6 +13,13 @@ import {
 import { Search, List, LayoutGrid, Settings } from "lucide-react";
 import { Avatar } from "@nextui-org/avatar";
 import { useActiveAccount } from "thirdweb/react";
+import { sendTransaction, prepareContractCall } from "thirdweb";
+import { useReadContract } from "thirdweb/react";
+import { contract } from "@/config/client";
+import axios from "axios";
+import { Spinner } from "@nextui-org/spinner";
+import { Image } from "@nextui-org/image";
+
 
 const mockNFTs = [
   {
@@ -43,13 +50,49 @@ const mockNFTs = [
 ];
 
 export default function MyNFTsPage() {
+  interface NFT {
+    id: number;
+    name: string;
+    price: string;
+    description: string;
+    image: string;
+  }
+
   const [searchQuery, setSearchQuery] = useState("");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [ownedNfts, setOwnedNfts] = useState<any>();
   const address = useActiveAccount()?.address;
+  const [nfts, setNfts] = useState<NFT[]>([]);
 
-  const filteredNFTs = mockNFTs.filter((nft) =>
-    nft.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const { data, isLoading } = useReadContract({
+    contract,
+    method: "getAllOwnedNfts",
+    params: [String(address)],
+  });
+
+  useEffect(() => {
+    if(data) setOwnedNfts(data);
+  },[data])
+
+  const fetch = async() => {
+    try {
+      const response = await axios.get('/api/getOwnedNFTs', {
+          params: {
+            tokenURLs: JSON.stringify(ownedNfts),
+          },
+      });
+      
+      setNfts(response.data);
+    } catch (error) {
+        console.error('Error fetching metadata:', error);
+    }
+  }
+
+  useEffect(() => {
+    if(ownedNfts) {
+      fetch();
+    }
+  },[ownedNfts])
 
   return (
     <div className="flex-grow bg-background p-8">
@@ -107,40 +150,31 @@ export default function MyNFTsPage() {
       </div>
 
       {/* NFT Grid */}
-      <div
-        className={`grid gap-10 my-10 lg:mx-20 ${
-          viewMode === "grid"
-            ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-            : "grid-cols-1"
-        }`}
-      >
-        {filteredNFTs.map((nft) => (
-          <Card
-            key={nft.id}
-            className="hover:scale-105 transition-transform"
-            isPressable
-          >
-            <CardBody className="p-0">
-              <img
-                src={nft.image}
-                alt={nft.name}
-                className={`w-full ${viewMode === "grid" ? "h-[300px]" : "h-[200px]"} object-cover`}
-              />
-            </CardBody>
-            <CardFooter className="flex flex-col items-start">
-              <h3 className="text-lg font-semibold">{nft.name}</h3>
-              <p className="text-default-500">{nft.description}</p>
-            </CardFooter>
-          </Card>
-        ))}
-      </div>
-
-      {/* Empty State */}
-      {filteredNFTs.length === 0 && (
-        <div className="text-center py-12">
-          <p className="text-default-500">
-            No NFTs found matching your search.
-          </p>
+      {nfts.length > 0 ? (
+        <div className="flex gap-12">
+          {nfts.map((nft, index) => (
+            <Card
+              key={index}
+              className="max-w-[300px] transition-all hover:scale-105 hover:shadow-lg"
+            >
+              <CardBody className="p-0">
+                <Image
+                  src={nft.image}
+                  alt={nft.name}
+                  width="100%"
+                  height={200}
+                />
+              </CardBody>
+              <CardFooter className="flex-col items-start">
+                <h4 className="font-bold text-large">{nft.name}</h4>
+                <p className="text-default-500">{nft.description}</p>
+              </CardFooter>
+            </Card>
+          ))}
+        </div>
+      ) : (
+        <div className="py-12 w-full flex justify-center">
+          <Spinner />
         </div>
       )}
     </div>

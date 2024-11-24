@@ -17,6 +17,7 @@ const domain = {
 export async function POST(req: NextRequest, res: NextResponse) {
   const { tokenId, studentName, uri } = await req.json();
   const voucher = { tokenId, studentName, uri };
+  console.log(voucher);
   const types = {
     LazyMintVoucher: [
       { name: "tokenId", type: "uint256" },

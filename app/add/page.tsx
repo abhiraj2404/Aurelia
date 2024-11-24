@@ -13,6 +13,31 @@ export default function AddPage() {
   const [url, setUrl] = useState("");
   const [uploading, setUploading] = useState(false);
   const router = useRouter();
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [formData, setFormData] = useState({
+    name: "",
+    description: "",
+    price: "",
+    collection: "",
+  });
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const collections = [
+    { label: "Collection 1", value: "collection1" },
+    { label: "Collection 2", value: "collection2" },
+  ];
+
+    const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setFile(e.target?.files?.[0]);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const uploadFile = async () => {
     try {
@@ -39,20 +64,6 @@ export default function AddPage() {
     }
   };
 
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [formData, setFormData] = useState({
-    name: "",
-    description: "",
-    price: "",
-    collection: "",
-  });
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const collections = [
-    { label: "Collection 1", value: "collection1" },
-    { label: "Collection 2", value: "collection2" },
-  ];
-
   const uploadMetadata = async (metadata: object) => {
     try {
       const metadataBlob = new Blob([JSON.stringify(metadata)], {
@@ -78,18 +89,6 @@ export default function AddPage() {
     } catch (e) {
       console.error("Error uploading metadata:", e);
       alert("Trouble uploading metadata");
-    }
-  };
-
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setFile(e.target?.files?.[0]);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
     }
   };
 

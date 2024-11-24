@@ -23,6 +23,7 @@ export default function CollectionsPage() {
     price: string;
     description: string;
     image: string;
+    metaUrl: string;
   }
 
   const [nfts, setNfts] = useState<NFT[]>([]);
@@ -42,6 +43,7 @@ export default function CollectionsPage() {
 
         const metadataFiles = await response.json(); // Expecting array of metadata JSON
         setNfts(metadataFiles);
+        console.log(metadataFiles);
       } catch (error) {
         console.error("Error fetching NFTs:", error);
       }
@@ -63,17 +65,13 @@ export default function CollectionsPage() {
       const data = {
         tokenId: parseInt(nft.name.split("#")[1], 10),
         studentName: nft.name,
-        uri: nft.image,
+        uri: nft.metaUrl,
       };
       const uploadRequest = await fetch("/api/getVoucher", {
         method: "POST",
         body: JSON.stringify(data),
       });
-
-      if (!uploadRequest.ok) {
-        throw new Error("Failed to fetch voucher");
-      }
-
+     
       const voucher = await uploadRequest.json();
       console.log("Voucher received:", voucher);
       const transaction = prepareContractCall({
