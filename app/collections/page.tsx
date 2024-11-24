@@ -4,7 +4,13 @@ import { Button } from "@nextui-org/button";
 import { Card, CardBody, CardFooter } from "@nextui-org/card";
 import { Image } from "@nextui-org/image";
 import { Input } from "@nextui-org/input";
-import { ChevronDownIcon, SearchIcon } from "lucide-react";
+import {
+  ChevronDownIcon,
+  LayoutGrid,
+  List,
+  Search,
+  SearchIcon,
+} from "lucide-react";
 import {
   Dropdown,
   DropdownItem,
@@ -28,6 +34,7 @@ export default function CollectionsPage() {
 
   const [nfts, setNfts] = useState<NFT[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [filter, setFilter] = useState("all");
   const account = useActiveAccount();
   const address = useActiveAccount()?.address;
@@ -71,7 +78,7 @@ export default function CollectionsPage() {
         method: "POST",
         body: JSON.stringify(data),
       });
-     
+
       const voucher = await uploadRequest.json();
       console.log("Voucher received:", voucher);
       const transaction = prepareContractCall({
@@ -117,65 +124,87 @@ export default function CollectionsPage() {
         </div>
 
         {/* Search and Filter Section */}
-        <div className="container mx-auto lg:px-40 px-6 py-8">
-          <div className="flex flex-col md:flex-row gap-4 mb-8">
+        <div className="container mx-auto lg:px-28 px-6 py-8">
+          <div className="flex flex-col my-10 lg:mx-20 sm:flex-row gap-4 mb-8 justify-between items-start sm:items-center">
             <Input
               isClearable
               className="w-full md:max-w-[44%]"
               placeholder="Search NFTs..."
-              startContent={<SearchIcon />}
+              startContent={<Search className="text-default-400" size={20} />}
               value={searchTerm}
               onValueChange={setSearchTerm}
             />
-            <Dropdown>
-              <DropdownTrigger>
-                <Button
-                  variant="flat"
-                  className="capitalize"
-                  endContent={<ChevronDownIcon className="text-small" />}
-                >
-                  {filter === "all"
-                    ? "All Prices"
-                    : filter === "below1"
-                      ? "Below 1 ETH"
-                      : "1 ETH and above"}
-                </Button>
-              </DropdownTrigger>
-              <DropdownMenu
-                aria-label="Filter by price"
-                variant="flat"
-                disallowEmptySelection
-                selectionMode="single"
-                selectedKeys={[filter]}
-                onSelectionChange={(keys) =>
-                  setFilter(Array.from(keys)[0] as string)
-                }
+            <div className="flex gap-2">
+              <Button
+                variant={viewMode === "grid" ? "solid" : "flat"}
+                isIconOnly
+                onClick={() => setViewMode("grid")}
               >
-                <DropdownItem key="all">All Prices</DropdownItem>
-                <DropdownItem key="below1">Below 1 ETH</DropdownItem>
-                <DropdownItem key="above1">1 ETH and above</DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
+                <LayoutGrid size={20} />
+              </Button>
+              <Button
+                variant={viewMode === "list" ? "solid" : "flat"}
+                isIconOnly
+                onClick={() => setViewMode("list")}
+              >
+                <List size={20} />
+              </Button>
+              <Dropdown>
+                <DropdownTrigger>
+                  <Button
+                    variant="flat"
+                    className="capitalize"
+                    endContent={<ChevronDownIcon className="text-small" />}
+                  >
+                    {filter === "all"
+                      ? "All Prices"
+                      : filter === "below1"
+                        ? "Below 1 ETH"
+                        : "1 ETH and above"}
+                  </Button>
+                </DropdownTrigger>
+                <DropdownMenu
+                  aria-label="Filter by price"
+                  variant="flat"
+                  disallowEmptySelection
+                  selectionMode="single"
+                  selectedKeys={[filter]}
+                  onSelectionChange={(keys) =>
+                    setFilter(Array.from(keys)[0] as string)
+                  }
+                >
+                  <DropdownItem key="all">All Prices</DropdownItem>
+                  <DropdownItem key="below1">Below 1 ETH</DropdownItem>
+                  <DropdownItem key="above1">1 ETH and above</DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
+            </div>
           </div>
 
           {/* NFT Grid */}
           {nfts.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-12">
+            <div
+              className={`grid gap-10 my-10 lg:mx-20 ${
+                viewMode === "grid"
+                  ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+                  : "grid-cols-1"
+              }`}
+            >
               {filteredNFTs.map((nft, index) => (
                 <Card
                   key={index}
-                  className="max-w-[300px] transition-all hover:scale-105 hover:shadow-lg"
+                  className="hover:scale-105 transition-transform"
+                  isPressable
                 >
                   <CardBody className="p-0">
-                    <Image
+                    <img
                       src={nft.image}
                       alt={nft.name}
-                      width="100%"
-                      height={200}
+                      className={`w-full ${viewMode === "grid" ? "h-[300px]" : "h-[200px]"} object-cover`}
                     />
                   </CardBody>
-                  <CardFooter className="flex-col items-start">
-                    <h4 className="font-bold text-large">{nft.name}</h4>
+                  <CardFooter className="flex flex-col items-start">
+                    <h3 className="text-lg font-semibold">{nft.name}</h3>
                     <p className="text-default-500">{nft.description}</p>
                     <Button
                       className="w-full mt-2 transition-colors hover:bg-primary-400"

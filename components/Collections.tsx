@@ -3,9 +3,11 @@
 import { Button } from "@nextui-org/button";
 import { Card, CardBody, CardFooter } from "@nextui-org/card";
 import { Image } from "@nextui-org/image";
+import { useRouter } from "next/navigation";
 import React from "react";
 
 function Collections() {
+  const router = useRouter();
   const collections = [
     {
       id: "2023",
@@ -47,6 +49,7 @@ function Collections() {
                 variant="flat"
                 size="sm"
                 className="mt-2 transition-colors hover:bg-primary-400"
+                onPress={() => router.push(`/collections?id=${collection.id}`)}
               >
                 View Collection
               </Button>
