@@ -164,7 +164,7 @@ export default function MyNFTsPage() {
             : "grid-cols-1"
         }`}
       >
-        {filteredNFTs.map((nft, index) => (
+        {filteredNFTs.reverse().map((nft, index) => (
           <Card
             key={index}
             className="hover:scale-105 transition-transform"

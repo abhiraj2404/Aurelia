@@ -31,9 +31,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
     const urls = JSON.parse(tokenURLs);
     const metadataPromises = urls.map(async (url: any) => {
       const ipfs_pin_hash = extractIpfsHash(url) || "";
-      console.log(ipfs_pin_hash);
       const { data } = await pinata.gateways.get(ipfs_pin_hash);
-      console.log("data: " + data);
       if (data && typeof data === 'object' && !Array.isArray(data)) {
         return data;
       }
