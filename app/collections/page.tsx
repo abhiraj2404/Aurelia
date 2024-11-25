@@ -50,7 +50,6 @@ export default function CollectionsPage() {
 
         const metadataFiles = await response.json(); // Expecting array of metadata JSON
         setNfts(metadataFiles);
-        console.log(metadataFiles);
       } catch (error) {
         console.error("Error fetching NFTs:", error);
       }
