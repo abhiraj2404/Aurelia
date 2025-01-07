@@ -103,7 +103,7 @@ contract LazyMint is ERC721, ERC721URIStorage, ERC721Enumerable, Ownable, EIP712
         address to,
         uint256 tokenId,
         bytes memory data
-    ) public override(ERC721, IERC721) {
+    ) public override(ERC721, IERC721) pure {
         revert("its a soulbound token");
     }
 
@@ -111,7 +111,7 @@ contract LazyMint is ERC721, ERC721URIStorage, ERC721Enumerable, Ownable, EIP712
         address from,
         address to,
         uint256 tokenId
-    ) public override(ERC721, IERC721) {
+    ) public override(ERC721, IERC721) pure {
         revert("its a soulbound token");
     }
 

@@ -1,6 +1,7 @@
 import dbConnect from "@/utils/dbConnect";
 import Collection from "@/models/collections";
 import { NextRequest, NextResponse } from "next/server";
+import { pinata } from "@/utils/config";
 
 //write post request to create a new collection
 export async function POST(request: NextRequest) {
@@ -8,7 +9,11 @@ export async function POST(request: NextRequest) {
     // Connect to the database
     await dbConnect();
 
-    const { name, image, id } = await request.json();
+    const { name, image } = await request.json();
+    const group = await pinata.groups.create({
+      name: name
+    });
+    const id = group.id;
 
     const collection = await Collection.create({
       id,
@@ -40,7 +45,6 @@ export async function GET() {
     await dbConnect();
 
     const collections = await Collection.find();
-    console.log(collections);
 
     return NextResponse.json(
       {

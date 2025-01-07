@@ -6,7 +6,6 @@ import Link from "next/link";
 import axios from "axios";
 import { Button } from "@nextui-org/button";
 import { useRouter } from "next/navigation";
-import { pinata } from "@/utils/config";
 
 export default function CollectionsPage() {
   const router = useRouter();
@@ -61,26 +60,15 @@ export default function CollectionsPage() {
     if (!newCollection.name || !newCollection.image) return;
 
     //add logic to send the new collection to the server
-    let group;
     try {
-      try {
-        group = await pinata.groups.create({
-          name: newCollection.name
-        });
-      } catch (error) {
-        console.log("error creating group", error);
-        alert("error creating group");
-      }
-      if (!group) throw new Error("Failed to create group");
-
       const imagefile = newCollection.image;
       const imageUrl = await uploadFile(imagefile, newCollection.name);
 
       const res = await axios.post("/api/collections", {
         name: newCollection.name,
         image: imageUrl,
-        id: group.id,
       });
+
       if (res.data.success) {
         alert("Collection created successfully");
         fetchCollections();

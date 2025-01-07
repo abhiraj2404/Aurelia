@@ -1,8 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Upload, FileText, AlertCircle } from "lucide-react";
 import { useSearchParams } from "next/navigation";
+import { ethers } from "ethers";
+import axios from "axios";
+import { useActiveAccount } from "thirdweb/react";
+
+// import { inAppWallet } from "thirdweb/wallets";
+ 
+// const wallet = inAppWallet();
 
 interface FileWithPreview extends File {
   preview?: string;
@@ -19,6 +26,12 @@ export default function AddItemsPage() {
   const [isDragging, setIsDragging] = useState(false);
   const [errors, setErrors] = useState<ValidationError[]>([]);
   const [isUploading, setIsUploading] = useState(false);
+  const activeAccount = useActiveAccount();
+
+  const SIGN_DOMAIN = "IIIT SRICITY";
+  const SIGN_VERSION = "1";
+  const chainId = 421614;
+  const contractAddress = "0x93744978B078414d6BDf56E0A4cB37680DF226b5";
 
   const searchParams = useSearchParams();
   const collectionName = searchParams.get("name");
@@ -164,10 +177,75 @@ export default function AddItemsPage() {
       }
 
       //Implement actual upload logic here
-      //TODO: 
-
+      //TODO:
       console.log("Uploading files...");
+
+      const text = await metadataFile.text();
+      const lines = text.split("\n").filter((line) => line.trim());
+      const header = lines[0].toLowerCase();
+      const headers = header.split(",");
+      const tokenIdIndex = headers.indexOf("tokenid");
+      const nameIndex = headers.indexOf("name");
+      const descIndex = headers.indexOf("description");
+      
+      const domain = {
+        name: SIGN_DOMAIN,
+        version: SIGN_VERSION,
+        verifyingContract: contractAddress,
+        chainId,
+      };
+
+      for (let i = 1; i < lines.length; i++) {
+        const columns = lines[i].split(",");
+        const tokenId = parseInt(columns[tokenIdIndex]);
+        const name = columns[nameIndex];
+        const description = columns[descIndex];
+
+        const image = images[i-1];
+        const imageURL = await uploadFile(image, name);
+
+        const metadata = {
+          name: name,
+          description: description,
+          image: imageURL,
+        };
+
+        const uri = await uploadMetadata(metadata, name);
+
+        const voucher = {
+          groupId: collectionId,
+          tokenId: tokenId,
+          studentName: name,
+          uri: uri,
+        };
+        
+        const types = {
+          LazyMintVoucher: [
+            { name: "tokenId", type: "uint256" },
+            { name: "studentName", type: "string" },
+            { name: "uri", type: "string" },
+          ],
+        };
+        
+        
+        const signature = await activeAccount?.signTypedData({
+          domain,
+          types,
+          primaryType: "LazyMintVoucher",
+          message: voucher,
+        });
+
+        const res = await axios.post("/api/addItems", {
+          groupId: collectionId,
+          metaURL: uri,
+          sig: signature
+        });
+
+      }
+
+      console.log("Files uploaded...");
     } catch (error) {
+      console.log(error);
       setErrors([
         {
           message: "An error occurred while validating the files",
@@ -176,6 +254,63 @@ export default function AddItemsPage() {
       ]);
     } finally {
       setIsUploading(false);
+    }
+  };
+
+  const uploadFile = async (file: File, name: string) => {
+    try {
+      if (!file) {
+        alert("No file selected");
+        return;
+      }
+
+      const data = new FormData();
+      data.set("file", file, name);
+      if (collectionId !== null) {
+        data.set("id", collectionId);
+      }      
+      const uploadRequest = await fetch("/api/files", {
+        method: "POST",
+        body: data,
+      });
+      const signedUrl = await uploadRequest.json();
+      return signedUrl;
+    } catch (e) {
+      console.log(e);
+      alert("Trouble uploading file");
+    }
+  };
+
+  const uploadMetadata = async (metadata: object, name: string) => {
+    try {
+      const metadataBlob = new Blob([JSON.stringify(metadata)], {
+        type: "application/json",
+      });
+
+      const metadataFormData = new FormData();
+      metadataFormData.set(
+        "file",
+        metadataBlob,
+        `metadata-${name}.json`
+      );
+      if (collectionId !== null) {
+        metadataFormData.set("id", collectionId);
+      }      
+
+      const metadataUploadRequest = await fetch("/api/files", {
+        method: "POST",
+        body: metadataFormData,
+      });
+
+      if (!metadataUploadRequest.ok)
+        throw new Error("Failed to upload metadata");
+
+      const data = await metadataUploadRequest.json();
+
+      return data;
+    } catch (e) {
+      console.error("Error uploading metadata:", e);
+      alert("Trouble uploading metadata");
     }
   };
 

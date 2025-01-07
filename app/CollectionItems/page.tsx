@@ -38,8 +38,6 @@ export default function CollectionsPage() {
   const account = useActiveAccount();
   const address = useActiveAccount()?.address;
 
-  console.log("User address:", account?.address);
-
   useEffect(() => {
     async function fetchNFTs() {
       try {
@@ -50,7 +48,6 @@ export default function CollectionsPage() {
         });
 
         const metadataFiles = response.data;
-        console.log(metadataFiles);
         setNfts(metadataFiles);
       } catch (error) {
         console.log("Error fetching NFTs:", error);
