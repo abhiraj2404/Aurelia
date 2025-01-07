@@ -54,7 +54,7 @@ export const Navbar = () => {
             <p className="font-bold text-inherit">Senior Farewell NFTs</p>
           </NextLink>
         </NavbarBrand>
-        <ul className="hidden lg:flex gap-4 justify-start ml-2">
+        <ul className="hidden lg:flex gap-6 justify-start ml-2">
           {siteConfig.navItems.map((item) => (
             <NavbarItem key={item.href}>
               <NextLink
@@ -76,13 +76,13 @@ export const Navbar = () => {
         className="hidden sm:flex basis-1/5 sm:basis-full"
         justify="end"
       >
-        <NavbarItem className="hidden sm:flex gap-2">
+        <NavbarItem className="hidden sm:flex gap-">
           <Link isExternal aria-label="Github" href={siteConfig.links.github}>
             <GithubIcon className="text-default-500" />
           </Link>
           <ThemeSwitch />
         </NavbarItem>
-        <NavbarItem className="hidden lg:flex">{searchInput}</NavbarItem>
+        {/* <NavbarItem className="hidden lg:flex">{searchInput}</NavbarItem> */}
         <NavbarItem className="hidden md:flex">
           <ConnectButton
             client={client}
@@ -104,19 +104,17 @@ export const Navbar = () => {
       </NavbarContent>
 
       <NavbarMenu>
-        {searchInput}
+        {/* {searchInput} */}
         <div className="mx-4 mt-2 flex flex-col gap-2">
           {siteConfig.navMenuItems.map((item, index) => {
-            const isActive = pathname === item.href; 
+            const isActive = pathname === item.href;
 
             return (
               <NavbarMenuItem key={`${item}-${index}`}>
                 <Link
                   href={item.href}
                   className={`text-lg ${
-                    isActive
-                      ? "text-primary font-semibold" 
-                      : "text-foreground" 
+                    isActive ? "text-primary font-semibold" : "text-foreground"
                   }`}
                 >
                   {item.label}
