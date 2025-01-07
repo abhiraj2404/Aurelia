@@ -4,29 +4,28 @@ import { Button } from "@nextui-org/button";
 import { Card, CardBody, CardFooter } from "@nextui-org/card";
 import { Image } from "@nextui-org/image";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 function Collections() {
   const router = useRouter();
+  const [collections, setCollections] = useState<any[]>([]);
 
   //add logic to dynamically fetch collections from database
-  const collections = [
-    {
-      id: "2023",
-      name: "Class of 2023",
-      imageUrl: "/test.jpg",
-    },
-    {
-      id: "2024",
-      name: "Class of 2024",
-      imageUrl: "/test.jpg",
-    },
-    {
-      id: "2025",
-      name: "Class of 2025",
-      imageUrl: "/test.jpg",
-    },
-  ];
+  const fetchCollections = async () => {
+    try {
+      const response = await fetch("/api/collections");
+      const res = await response.json();
+      console.log(res.data);
+      setCollections(res.data);
+    } catch (error) {
+      console.error("Error fetching collections:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCollections();
+  }, []);
+
   return (
     <div className="container mx-auto px-10 lg:px-32 py-16">
       <h2 className="text-3xl font-bold text-center mb-12">NFT Collections</h2>
@@ -39,7 +38,7 @@ function Collections() {
           >
             <CardBody className="p-0">
               <Image
-                src={collection.imageUrl}
+                src={collection.image}
                 alt={collection.name}
                 className="w-full "
               />
@@ -51,7 +50,11 @@ function Collections() {
                 variant="flat"
                 size="sm"
                 className="mt-2 transition-colors hover:bg-primary-400"
-                onPress={() => router.push(`/collections?id=${collection.id}`)}
+                onPress={() =>
+                  router.push(
+                    `/CollectionItems?name=${collection.name}&id=${collection.id}`
+                  )
+                }
               >
                 View Collection
               </Button>

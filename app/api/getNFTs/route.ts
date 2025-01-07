@@ -7,15 +7,22 @@ export async function GET(req: NextRequest, res: NextResponse) {
   try {
     const _cookies = cookies();
 
-    const files = await pinata
-      .listFiles()
-      .pageLimit(30)
-      .group("2c83451b-83a7-416c-b21b-7ba3fa3547d7"); // Get list of files
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get("id");
+
+    
+    console.log("get req received for id",id);
+    if (id === null) {
+      throw new Error("No id provided");
+    }
+
+    const files = await pinata.listFiles().pageLimit(30).group(id); // Get list of files
+    console.log("files from backend fetched");
 
     const jsonFiles = files.filter((file) =>
       file.metadata.name?.endsWith(".json")
     );
-    
+
     const metadataPromises = jsonFiles.map(async (file) => {
       const { data } = await pinata.gateways.get(`${file.ipfs_pin_hash}`);
       if (data && typeof data === "object" && !Array.isArray(data)) {

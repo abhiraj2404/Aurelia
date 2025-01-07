@@ -10,16 +10,12 @@ export const siteConfig = {
       href: "/",
     },
     {
-      label: "Collections",
-      href: "/collections",
+      label: "myCollections",
+      href: "/myCollections",
     },
     {
       label: "myNFTs",
       href: "/myNFTs",
-    },
-    {
-      label: "myCollections",
-      href: "/myCollections",
     },
   ],
   navMenuItems: [
@@ -28,8 +24,8 @@ export const siteConfig = {
       href: "/",
     },
     {
-      label: "Collections",
-      href: "/collections",
+      label: "myCollections",
+      href: "/myCollections",
     },
     {
       label: "myNFTs",

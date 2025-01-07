@@ -4,8 +4,11 @@ import { useEffect, useState } from "react";
 import { Plus, Image as ImageIcon } from "lucide-react";
 import Link from "next/link";
 import axios from "axios";
+import { Button } from "@nextui-org/button";
+import { useRouter } from "next/navigation";
 
 export default function CollectionsPage() {
+  const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   //add logic to fetch collections from database with the help of useEffect
@@ -114,12 +117,24 @@ export default function CollectionsPage() {
                 <p className="text-gray-400 mb-4">
                   {collection.itemCount} items
                 </p>
-                <Link
-                  href={`/addItems?id=${collection.id}&name=${encodeURIComponent(collection.name)}`}
-                  className="inline-block w-full text-center py-2 px-4 bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
-                >
-                  Add Items
-                </Link>
+                <div className="flex justify-start items-center gap-2 *:flex-grow">
+                  <Link
+                    href={`/addItems?name=${collection.name}&id=${collection.id}`}
+                    className="inline-block text-center py-2 px-4 bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors "
+                  >
+                    Add Items
+                  </Link>
+                  <Button
+                    color="primary"
+                    variant="flat"
+                    className="transition-colors hover:bg-primary-400"
+                    onPress={() =>
+                      router.push(`/CollectionItems?name=${collection.name}&id=${collection.id}`)
+                    }
+                  >
+                    View Collection
+                  </Button>
+                </div>
               </div>
             </div>
           ))}

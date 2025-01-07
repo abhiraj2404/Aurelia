@@ -2,15 +2,8 @@
 import { useEffect, useState } from "react";
 import { Button } from "@nextui-org/button";
 import { Card, CardBody, CardFooter } from "@nextui-org/card";
-import { Image } from "@nextui-org/image";
 import { Input } from "@nextui-org/input";
-import {
-  ChevronDownIcon,
-  LayoutGrid,
-  List,
-  Search,
-  SearchIcon,
-} from "lucide-react";
+import { ChevronDownIcon, LayoutGrid, List, Search } from "lucide-react";
 import {
   Dropdown,
   DropdownItem,
@@ -21,6 +14,8 @@ import { useActiveAccount } from "thirdweb/react";
 import { sendTransaction, prepareContractCall } from "thirdweb";
 import { contract } from "@/config/client";
 import { Spinner } from "@nextui-org/spinner";
+import axios from "axios";
+import { useSearchParams } from "next/navigation";
 
 export default function CollectionsPage() {
   interface NFT {
@@ -31,6 +26,10 @@ export default function CollectionsPage() {
     image: string;
     metaUrl: string;
   }
+  const searchParams = useSearchParams();
+
+  const id = searchParams.get("id");
+  const name = searchParams.get("name");
 
   const [nfts, setNfts] = useState<NFT[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -44,18 +43,23 @@ export default function CollectionsPage() {
   useEffect(() => {
     async function fetchNFTs() {
       try {
-        // Fetch files from your backend
-        const response = await fetch("/api/getNFTs"); // Replace with your API route
-        if (!response.ok) throw new Error("Failed to fetch NFT data");
+        const response = await axios.get("/api/getNFTs", {
+          params: {
+            id: id,
+          },
+        });
 
-        const metadataFiles = await response.json(); // Expecting array of metadata JSON
+        const metadataFiles = response.data;
+        console.log(metadataFiles);
         setNfts(metadataFiles);
       } catch (error) {
-        console.error("Error fetching NFTs:", error);
+        console.log("Error fetching NFTs:", error);
+        alert(`Error fetching NFTs ${error}`);
       }
     }
-
+    console.log("Fetching NFTs...");
     fetchNFTs();
+    console.log("fetched");
   }, []);
 
   const filteredNFTs = nfts.filter(
@@ -118,7 +122,7 @@ export default function CollectionsPage() {
           style={{ backgroundImage: "url('/test2.jpg')" }}
         >
           <h1 className="text-4xl md:text-6xl font-bold text-white drop-shadow-lg text-center">
-            Class of 2023 NFT Collection
+            {name} NFT Collection
           </h1>
         </div>
 
@@ -210,7 +214,7 @@ export default function CollectionsPage() {
                       color="primary"
                       onClick={() => handleBuyNow(nft, index)}
                     >
-                      Buy Now
+                      Mint Now
                     </Button>
                   </CardFooter>
                 </Card>
