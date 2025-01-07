@@ -6,6 +6,7 @@ import Link from "next/link";
 import axios from "axios";
 import { Button } from "@nextui-org/button";
 import { useRouter } from "next/navigation";
+import { pinata } from "@/utils/config";
 
 export default function CollectionsPage() {
   const router = useRouter();
@@ -59,23 +60,37 @@ export default function CollectionsPage() {
     e.preventDefault();
     if (!newCollection.name || !newCollection.image) return;
 
-    const imagefile = newCollection.image;
-    const imageUrl = await uploadFile(imagefile, newCollection.name);
-
     //add logic to send the new collection to the server
+    let group;
+    try {
+      try {
+        group = await pinata.groups.create({
+          name: newCollection.name
+        });
+      } catch (error) {
+        console.log("error creating group", error);
+        alert("error creating group");
+      }
+      if (!group) throw new Error("Failed to create group");
 
-    const res = await axios.post("/api/collections", {
-      name: newCollection.name,
-      image: imageUrl,
-      id: new Date().getTime().toString(),
-    });
+      const imagefile = newCollection.image;
+      const imageUrl = await uploadFile(imagefile, newCollection.name);
 
-    if (res.data.success) {
-      alert("Collection created successfully");
-      fetchCollections();
-      console.log(res.data);
-    } else {
-      alert(`Failed to create collection: ${res.data.error}`);
+      const res = await axios.post("/api/collections", {
+        name: newCollection.name,
+        image: imageUrl,
+        id: group.id,
+      });
+      if (res.data.success) {
+        alert("Collection created successfully");
+        fetchCollections();
+        console.log(res.data);
+      } else {
+        alert(`Failed to create collection: ${res.data.error}`);
+      }
+    } catch (error) {
+      console.log("error creating collecion", error);
+      alert("error creating collection");
     }
 
     setNewCollection({ name: "", image: null });
@@ -129,7 +144,9 @@ export default function CollectionsPage() {
                     variant="flat"
                     className="transition-colors hover:bg-primary-400"
                     onPress={() =>
-                      router.push(`/CollectionItems?name=${collection.name}&id=${collection.id}`)
+                      router.push(
+                        `/CollectionItems?name=${collection.name}&id=${collection.id}`
+                      )
                     }
                   >
                     View Collection

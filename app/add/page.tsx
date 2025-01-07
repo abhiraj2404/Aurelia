@@ -105,7 +105,7 @@ export default function AddPage() {
       await uploadMetadata(metadata);
       setUploading(false);
       console.log("Form submitted:", formData);
-      router.push("/collections");
+      router.push("/myCollections");
     }
   };
 
@@ -121,7 +121,7 @@ export default function AddPage() {
         <Card>
           <CardBody className="gap-6">
             {/* Image Upload Section */}
-            <button
+            <div
               className="border-2 border-dashed rounded-lg p-8 text-center cursor-pointer"
               onClick={() => fileInputRef.current?.click()}
             >
@@ -166,7 +166,7 @@ export default function AddPage() {
                 accept="image/*,video/mp4"
                 onChange={handleImageUpload}
               />
-            </button>
+            </div>
 
             {/* Collection Selection */}
             <Select

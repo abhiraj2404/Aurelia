@@ -164,6 +164,7 @@ export default function AddItemsPage() {
       }
 
       //Implement actual upload logic here
+      //TODO: 
 
       console.log("Uploading files...");
     } catch (error) {
