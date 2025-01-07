@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Upload, FileText, AlertCircle } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 
 interface FileWithPreview extends File {
   preview?: string;
@@ -12,12 +13,16 @@ interface ValidationError {
   type: "error" | "warning";
 }
 
-export default function AddCollectionPage() {
+export default function AddItemsPage() {
   const [images, setImages] = useState<FileWithPreview[]>([]);
   const [metadataFile, setMetadataFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [errors, setErrors] = useState<ValidationError[]>([]);
   const [isUploading, setIsUploading] = useState(false);
+
+  const searchParams = useSearchParams();
+  const collectionName = searchParams.get("name");
+  const collectionId = searchParams.get("id");
 
   const handleImageDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -176,11 +181,12 @@ export default function AddCollectionPage() {
   return (
     <div className="min-h-screen bg-[#111111] text-white p-8">
       <div className="max-w-3xl mx-auto">
-        <h1 className="text-4xl font-bold mb-8">Items</h1>
+        <h1 className="text-4xl font-bold mb-8">Add Items</h1>
+        {collectionName && (
+          <span className="text-xl text-gray-400">for {collectionName}</span>
+        )}
 
         <div className="bg-[#1B1B1B] rounded-lg p-6">
-          <h2 className="text-xl font-semibold mb-6">Upload a Collection</h2>
-
           <div className="space-y-6">
             {/* Image Upload Section */}
             <div

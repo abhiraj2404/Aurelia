@@ -8,6 +8,8 @@ import React from "react";
 
 function Collections() {
   const router = useRouter();
+
+  //add logic to dynamically fetch collections from database
   const collections = [
     {
       id: "2023",

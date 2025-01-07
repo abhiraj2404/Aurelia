@@ -18,8 +18,8 @@ export const siteConfig = {
       href: "/myNFTs",
     },
     {
-      label: "Add Collection",
-      href: "/addCollection",
+      label: "myCollections",
+      href: "/myCollections",
     },
   ],
   navMenuItems: [
