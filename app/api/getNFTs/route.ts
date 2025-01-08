@@ -16,7 +16,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
       throw new Error("No id provided");
     }
 
-    const files = await pinata.listFiles().pageLimit(30).group(id); // Get list of files
+    const files = await pinata.listFiles().pageLimit(100).group(id); // Get list of files
     console.log("files from backend fetched");
 
     const jsonFiles = files.filter((file) =>

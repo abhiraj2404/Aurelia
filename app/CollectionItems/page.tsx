@@ -48,6 +48,7 @@ export default function CollectionsPage() {
         });
 
         const metadataFiles = response.data;
+        console.log("metadataFiles", metadataFiles);
         setNfts(metadataFiles);
       } catch (error) {
         console.log("Error fetching NFTs:", error);
@@ -70,7 +71,7 @@ export default function CollectionsPage() {
   const handleBuyNow = async (nft: any, index: any) => {
     try {
       const data = {
-        tokenId: parseInt(nft.name.split("#")[1], 10),
+        tokenId: nft.tokenId,
         studentName: nft.name,
         uri: nft.metaUrl,
       };

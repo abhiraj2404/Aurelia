@@ -94,6 +94,7 @@ export default function AddItemsPage() {
     const headers = header.split(",");
     const tokenIdIndex = headers.indexOf("tokenid");
     const fileNameIndex = headers.indexOf("file_name");
+    console.log("headers", headers);
 
     // Check data rows
     const imageFileNames = new Set(images.map((img) => img.name));
@@ -121,14 +122,15 @@ export default function AddItemsPage() {
       tokenIds.add(tokenId);
 
       // Check if tokenIDs are consecutive
-      if (tokenId !== i) {
-        errors.push({
-          message: `TokenIDs must be consecutive numbers starting from 1. Found ${tokenId} at row ${i + 1}`,
-          type: "error",
-        });
-      }
+      // if (tokenId !== i) {
+      //   errors.push({
+      //     message: `TokenIDs must be consecutive numbers starting from 1. Found ${tokenId} at row ${i + 1}`,
+      //     type: "error",
+      //   });
+      // }
 
       // Check if image exists
+      console.log(columns[fileNameIndex]);
       const fileName = columns[fileNameIndex].trim();
       if (!imageFileNames.has(fileName)) {
         errors.push({
@@ -205,6 +207,7 @@ export default function AddItemsPage() {
         const imageURL = await uploadFile(image, name);
 
         const metadata = {
+          tokenId: tokenId,
           name: name,
           description: description,
           image: imageURL,
