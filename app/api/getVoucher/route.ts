@@ -1,20 +1,9 @@
-import { ethers } from "ethers";
+import dbConnect from "@/utils/dbConnect";
+import Signature from "@/models/signatures";
 import { NextRequest, NextResponse } from "next/server";
 
-const SIGN_DOMAIN = "IIIT SRICITY";
-const SIGN_VERSION = "1";
-const chainId = 421614;
-const contractAddress = process.env.CONTRACT_ADDRESS;
-const signer = new ethers.Wallet(process.env.PRIVATE_KEY as string);
-const domain = {
-  name: SIGN_DOMAIN,
-  version: SIGN_VERSION,
-  verifyingContract: contractAddress,
-  chainId,
-};
-
 export async function POST(req: NextRequest, res: NextResponse) {
-  const { tokenId, studentName, uri } = await req.json();
+  const { tokenId, studentName, uri, groupId } = await req.json();
   const voucher = { tokenId, studentName, uri };
   console.log(voucher);
   const types = {
@@ -25,6 +14,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
     ],
   };
 
-  const signature = await signer.signTypedData(domain, types, voucher);
+  const data = await Signature.findOne({groupId, metaURL: uri});
+  const signature = data.signature;
   return NextResponse.json({ ...voucher, signature }, { status: 200 });
 }

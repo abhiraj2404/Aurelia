@@ -30,8 +30,7 @@ export default function AddItemsPage() {
 
   const SIGN_DOMAIN = "IIIT SRICITY";
   const SIGN_VERSION = "1";
-  const chainId = 421614;
-  const contractAddress = "0x93744978B078414d6BDf56E0A4cB37680DF226b5";
+  const chainId = 80002;
 
   const searchParams = useSearchParams();
   const collectionName = searchParams.get("name");
@@ -189,13 +188,6 @@ export default function AddItemsPage() {
       const tokenIdIndex = headers.indexOf("tokenid");
       const nameIndex = headers.indexOf("name");
       const descIndex = headers.indexOf("description");
-      
-      const domain = {
-        name: SIGN_DOMAIN,
-        version: SIGN_VERSION,
-        verifyingContract: contractAddress,
-        chainId,
-      };
 
       for (let i = 1; i < lines.length; i++) {
         const columns = lines[i].split(",");
@@ -205,6 +197,14 @@ export default function AddItemsPage() {
 
         const image = images[i-1];
         const imageURL = await uploadFile(image, name);
+
+        const response = await axios.get("/api/contractAddress", {
+          params: {
+            groupId: collectionId,
+          },
+        });
+
+        let contractAddress = response.data.data;
 
         const metadata = {
           tokenId: tokenId,
@@ -217,7 +217,6 @@ export default function AddItemsPage() {
         const uri = await uploadMetadata(metadata, name);
 
         const voucher = {
-          groupId: collectionId,
           tokenId: tokenId,
           studentName: name,
           uri: uri,
@@ -230,7 +229,13 @@ export default function AddItemsPage() {
             { name: "uri", type: "string" },
           ],
         };
-        
+
+        const domain = {
+          name: SIGN_DOMAIN,
+          version: SIGN_VERSION,
+          verifyingContract: contractAddress,
+          chainId,
+        };
         
         const signature = await activeAccount?.signTypedData({
           domain,
