@@ -29,11 +29,11 @@ contract LazyMint is ERC721, ERC721URIStorage, ERC721Enumerable, Ownable, EIP712
     }
 
     struct LazyMintVoucher {
+        uint256 tokenId;
         string studentName;
         string uri;
         bytes signature;
     }
-
     function recover(LazyMintVoucher calldata voucher)
         public
         view
@@ -43,8 +43,9 @@ contract LazyMint is ERC721, ERC721URIStorage, ERC721Enumerable, Ownable, EIP712
             keccak256(
                 abi.encode(
                     keccak256(
-                        "LazyMintVoucher(string studentName,string uri)"
+                        "LazyMintVoucher(uint256 tokenId,string studentName,string uri)"
                     ),
+                    voucher.tokenId,
                     keccak256(bytes(voucher.studentName)),
                     keccak256(bytes(voucher.uri))
                 )
@@ -54,15 +55,12 @@ contract LazyMint is ERC721, ERC721URIStorage, ERC721Enumerable, Ownable, EIP712
         return signer;
     }
 
-    function safeMint(LazyMintVoucher calldata voucher, address to) public {
+    function safeMint(LazyMintVoucher calldata voucher, address to, uint256 tokenId) public {
         require(minter == recover(voucher), "wrong signature");
         require(!_usedURIs[voucher.uri], "URI already used"); // Check if the URI has already been used
 
-        uint256 newTokenId = _tokenIdCounter; // Get the current token ID
-        _tokenIdCounter++; // Manually increment the token ID
-
-        _safeMint(to, newTokenId);
-        _setTokenURI(newTokenId, voucher.uri);
+        _safeMint(to, tokenId);
+        _setTokenURI(tokenId, voucher.uri);
 
         _usedURIs[voucher.uri] = true; // Mark the URI as used
     }

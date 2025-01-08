@@ -11,6 +11,7 @@ const chain = polygonAmoy;
 const client = createThirdwebClient({
   clientId: clientId,
 });
+
 // const contract = getContract({
 //   address: "0x93744978B078414d6BDf56E0A4cB37680DF226b5",
 //   client: client,
@@ -850,12 +851,12 @@ const client = createThirdwebClient({
 // 	}
 // ]
 // });
+
 const EventContract = getContract({
-	address: "0x6B5eF7F65ae8a46A33E983EcD3E0D17Fc575905C",
+	address: "0xC5E542f468e34099fe9b0C6CE1F853718B331c07",
 	client: client,
 	chain: chain
 })
-
 
 const wallets = [
   inAppWallet({
