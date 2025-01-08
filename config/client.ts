@@ -1,12 +1,13 @@
 import { createThirdwebClient } from "thirdweb";
-import { arbitrumSepolia } from "thirdweb/chains";
+import { polygonAmoy } from "thirdweb/chains";
 import { inAppWallet } from "thirdweb/wallets";
 import { getContract } from "thirdweb";
+import { get } from "http";
 
 // Replace this with your client ID string
 // refer to https://portal.thirdweb.com/typescript/v5/client on how to get a client ID
 const clientId = "04b6b23f2438f7e65aa70f7d9cab282b";
-const chain = arbitrumSepolia;
+const chain = polygonAmoy;
 const client = createThirdwebClient({
   clientId: clientId,
 });
@@ -849,6 +850,11 @@ const contract = getContract({
 	}
 ]
 });
+const EventContract = getContract({
+	address: "0x6B5eF7F65ae8a46A33E983EcD3E0D17Fc575905C",
+	client: client,
+	chain: chain
+})
 
 
 const wallets = [
@@ -859,4 +865,4 @@ const wallets = [
     },
   }),
 ];
-export { client, chain, wallets, contract };
+export { client, chain, wallets, contract,EventContract };

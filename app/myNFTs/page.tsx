@@ -148,9 +148,9 @@ export default function MyNFTsPage() {
               </Button>
             </DropdownTrigger>
             <DropdownMenu aria-label="View options">
-              <DropdownItem>Sort by Name</DropdownItem>
-              <DropdownItem>Sort by Recent</DropdownItem>
-              <DropdownItem>Filter by Collection</DropdownItem>
+              <DropdownItem key={""}>Sort by Name</DropdownItem>
+              <DropdownItem key={""}>Sort by Recent</DropdownItem>
+              <DropdownItem key={""}>Filter by Collection</DropdownItem>
             </DropdownMenu>
           </Dropdown>
         </div>

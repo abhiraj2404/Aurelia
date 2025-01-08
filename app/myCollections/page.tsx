@@ -6,13 +6,19 @@ import Link from "next/link";
 import axios from "axios";
 import { Button } from "@nextui-org/button";
 import { useRouter } from "next/navigation";
-
+import { prepareContractCall, prepareEvent, getContractEvents, sendAndConfirmTransaction } from "thirdweb";
+import { useActiveAccount, useSendTransaction } from "thirdweb/react";
+import { EventContract, client } from "@/config/client";
 export default function CollectionsPage() {
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const wallet = useActiveAccount();
+  // const account = await wallet.connect({ client });
 
   //add logic to fetch collections from database with the help of useEffect
   const [collections, setCollections] = useState<any[]>([]);
+  const { mutate: sendTransaction } = useSendTransaction();
+
 
   const fetchCollections = async () => {
     try {
@@ -61,16 +67,47 @@ export default function CollectionsPage() {
 
     //add logic to send the new collection to the server
     try {
+      const transaction = prepareContractCall({
+        contract: EventContract,
+        method: "function addNewEvent(address minter)",
+        params: [wallet?.address || ""],
+      });
+      if (!wallet) {
+        alert("Wallet not connected");
+        return;
+      }
+      const preparedEvent = prepareEvent({
+        signature:
+          "event NewEventCreated(address organizer, address contractAddress)",
+      });
+      const trax = await sendAndConfirmTransaction({
+        transaction,
+        account: wallet,
+      });
+      console.log("Transaction sent:", trax);
+
+      const events = await getContractEvents({
+        contract: EventContract,
+        events: [preparedEvent],
+        fromBlock: trax.blockNumber,
+        toBlock: "latest",
+      });
+      const LazymintingContractAddress = events[0]?.args?.contractAddress;
+      console.log(LazymintingContractAddress)
+
+      console.log("Events found:", events);
       const imagefile = newCollection.image;
       const imageUrl = await uploadFile(imagefile, newCollection.name);
 
       const res = await axios.post("/api/collections", {
         name: newCollection.name,
         image: imageUrl,
+        LazymintingContractAddress: LazymintingContractAddress,
       });
 
       if (res.data.success) {
-        alert("Collection created successfully");
+
+        alert("collection created success")
         fetchCollections();
         console.log(res.data);
       } else {
@@ -80,6 +117,7 @@ export default function CollectionsPage() {
       console.log("error creating collecion", error);
       alert("error creating collection");
     }
+
 
     setNewCollection({ name: "", image: null });
     setIsModalOpen(false);

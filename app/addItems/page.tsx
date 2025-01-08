@@ -211,6 +211,7 @@ export default function AddItemsPage() {
           name: name,
           description: description,
           image: imageURL,
+          groupId: collectionId,
         };
 
         const uri = await uploadMetadata(metadata, name);
@@ -298,7 +299,7 @@ export default function AddItemsPage() {
       );
       if (collectionId !== null) {
         metadataFormData.set("id", collectionId);
-      }      
+      }
 
       const metadataUploadRequest = await fetch("/api/files", {
         method: "POST",

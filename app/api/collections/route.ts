@@ -9,7 +9,8 @@ export async function POST(request: NextRequest) {
     // Connect to the database
     await dbConnect();
 
-    const { name, image } = await request.json();
+    const { name, image, LazymintingContractAddress } = await request.json();
+    console.log(LazymintingContractAddress);
     const group = await pinata.groups.create({
       name: name
     });
@@ -19,8 +20,10 @@ export async function POST(request: NextRequest) {
       id,
       name,
       image,
+      LazymintingContractAddress,
       itemCount: 0,
     });
+    console.log(collection)
 
     return NextResponse.json(
       {
