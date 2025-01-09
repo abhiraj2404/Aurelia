@@ -14,6 +14,7 @@ export default function CollectionsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const wallet = useActiveAccount();
   // const account = await wallet.connect({ client });
+  const [isCreating, setIsCreating] = useState(false);
 
   //add logic to fetch collections from database with the help of useEffect
   const [collections, setCollections] = useState<any[]>([]);
@@ -63,7 +64,11 @@ export default function CollectionsPage() {
 
   const handleCreateCollection = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newCollection.name || !newCollection.image) return;
+    setIsCreating(true);
+    if (!newCollection.name || !newCollection.image) {
+      setIsCreating(false);
+      return;
+    }
 
     //add logic to send the new collection to the server
     try {
@@ -74,6 +79,7 @@ export default function CollectionsPage() {
       });
       if (!wallet) {
         alert("Wallet not connected");
+        setIsCreating(false);
         return;
       }
       const preparedEvent = prepareEvent({
@@ -110,13 +116,17 @@ export default function CollectionsPage() {
         alert("collection created success")
         fetchCollections();
         console.log(res.data);
+        setIsCreating(false);
       } else {
         alert(`Failed to create collection: ${res.data.error}`);
+        setIsCreating(false);
       }
     } catch (error) {
       console.log("error creating collecion", error);
+      setIsCreating(false);
       alert("error creating collection");
     }
+    setIsCreating(false);
 
 
     setNewCollection({ name: "", image: null });
@@ -257,9 +267,14 @@ export default function CollectionsPage() {
                   </button>
                   <button
                     type="submit"
-                    className="flex-1 py-2 px-4 bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
+                    className={`flex-1 py-2 px-4 bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors${
+                      isCreating
+                        ? "bg-blue-600/50 cursor-not-allowed"
+                        : "bg-blue-600 hover:bg-blue-700"
+                    }`}
+                    disabled={isCreating}
                   >
-                    Create
+                    {isCreating ? "Creating..." : "Create"}
                   </button>
                 </div>
               </form>

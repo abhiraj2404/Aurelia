@@ -11,7 +11,7 @@ import {
   DropdownTrigger,
 } from "@nextui-org/dropdown";
 import { useActiveAccount } from "thirdweb/react";
-import { sendTransaction, prepareContractCall } from "thirdweb";
+import { sendTransaction, prepareContractCall, sendAndConfirmTransaction } from "thirdweb";
 import { Spinner } from "@nextui-org/spinner";
 import axios from "axios";
 import { useSearchParams } from "next/navigation";
@@ -945,7 +945,7 @@ export default function CollectionsPage() {
       });
 
       if (account) {
-        const { transactionHash } = await sendTransaction({
+        const { transactionHash } = await sendAndConfirmTransaction({
           account,
           transaction,
         });
