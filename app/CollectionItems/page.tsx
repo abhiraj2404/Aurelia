@@ -77,6 +77,7 @@ export default function CollectionsPage() {
         uri: nft.metaUrl,
         groupId: id,
       };
+
       const uploadRequest = await fetch("/api/getVoucher", {
         method: "POST",
         body: JSON.stringify(data),
@@ -953,6 +954,18 @@ export default function CollectionsPage() {
           "Minting successfull , transaction hash :",
           transactionHash
         );
+
+        const nftData = {
+            userAddress: account.address,
+            metaURL: nft.metaUrl,
+            contractAddress: contractAddress,
+            groupId: id,
+        }
+
+        const uploadRequest = await fetch("/api/myNFTs", {
+            method: "POST",
+            body: JSON.stringify(nftData),
+          });
         alert("Minting successfull , check your wallet for transaction status");
       } else {
         alert("Please connect your wallet to mint the NFT");

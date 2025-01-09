@@ -14,7 +14,6 @@ import { Search, List, LayoutGrid, Settings } from "lucide-react";
 import { Avatar } from "@nextui-org/avatar";
 import { useActiveAccount } from "thirdweb/react";
 import { useReadContract } from "thirdweb/react";
-import { contract } from "@/config/client";
 import axios from "axios";
 import { Spinner } from "@nextui-org/spinner";
 
@@ -57,24 +56,51 @@ export default function MyNFTsPage() {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-  const [ownedNfts, setOwnedNfts] = useState<any>();
   const address = useActiveAccount()?.address;
   const [nfts, setNfts] = useState<NFT[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const { data, isLoading } = useReadContract({
-    contract,
-    method: "getAllOwnedNfts",
-    params: [String(address)],
-  });
+  // const { data, isLoading } = useReadContract({
+  //   contract,
+  //   method: "getAllOwnedNfts",
+  //   params: [String(address)],
+  // });
+
+  // useEffect(() => {
+  //   if (data) setOwnedNfts(data);
+  //   setLoading(false);
+  // }, [data]);
 
   useEffect(() => {
-    if (data) setOwnedNfts(data);
-    setLoading(false);
-  }, [data]);
+    if(address) {
+      fetch();
+    }
+  },[address])
 
   const fetch = async () => {
     try {
+      const response1 = await axios.get("/api/myNFTs", {
+        params: {
+          userAddress: address,
+        }
+      });
+
+      interface nftdata {
+        userAddress: string;
+        metaURL: string;
+        contractAddress: string;
+        groupId: string;
+      }
+
+      const data: nftdata[] = response1.data;
+      const ownedNfts: string[] = [];
+
+      data.map((d: nftdata,_) => {
+        ownedNfts.push(d.metaURL);
+      })
+
+      console.log(ownedNfts);
+
       const response = await axios.get("/api/getOwnedNFTs", {
         params: {
           tokenURLs: JSON.stringify(ownedNfts),
@@ -87,13 +113,6 @@ export default function MyNFTsPage() {
       console.error("Error fetching metadata:", error);
     }
   };
-
-  useEffect(() => {
-    if (ownedNfts) {
-      fetch();
-    }
-    setLoading(false);
-  }, [ownedNfts]);
 
   const filteredNFTs = nfts.filter((nft) =>
     nft.name.toLowerCase().includes(searchQuery.toLowerCase())
