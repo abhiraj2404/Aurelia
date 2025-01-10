@@ -326,10 +326,10 @@ export default function AddItemsPage() {
   return (
     <div className="min-h-screen bg-[#111111] text-white p-8">
       <div className="max-w-3xl mx-auto">
-        <h1 className="text-4xl font-bold mb-8">Add Items</h1>
-        {collectionName && (
-          <span className="text-xl text-gray-400">for {collectionName}</span>
-        )}
+      <h1 className="text-4xl font-bold mb-8">Add Items  {collectionName && (
+          <span>for {collectionName}</span>
+        )}</h1>
+       
 
         <div className="bg-[#1B1B1B] rounded-lg p-6">
           <div className="space-y-6">

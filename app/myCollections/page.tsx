@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { prepareContractCall, prepareEvent, getContractEvents, sendAndConfirmTransaction } from "thirdweb";
 import { useActiveAccount, useSendTransaction } from "thirdweb/react";
 import { EventContract, client } from "@/config/client";
+import { Spinner } from "@nextui-org/spinner";
 export default function CollectionsPage() {
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -19,16 +20,19 @@ export default function CollectionsPage() {
   //add logic to fetch collections from database with the help of useEffect
   const [collections, setCollections] = useState<any[]>([]);
   const { mutate: sendTransaction } = useSendTransaction();
-
+  const [loading, setIsloading] = useState(false);
 
   const fetchCollections = async () => {
+    setIsloading(true);
     try {
       const response = await fetch("/api/collections");
       const res = await response.json();
       console.log(res.data);
       setCollections(res.data);
+      setIsloading(false);
     } catch (error) {
       console.error("Error fetching collections:", error);
+      setIsloading(false);
     }
   };
 
@@ -148,7 +152,9 @@ export default function CollectionsPage() {
         </div>
 
         {/* Collections Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {loading ? (<div className="flex justify-center items-center h-64">
+              <Spinner size="lg" />
+            </div>) :(<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {collections.map((collection) => (
             <div
               key={collection.id}
@@ -165,9 +171,9 @@ export default function CollectionsPage() {
                 <h3 className="text-xl font-semibold mb-2">
                   {collection.name}
                 </h3>
-                <p className="text-gray-400 mb-4">
+                {/* <p className="text-gray-400 mb-4">
                   {collection.itemCount} items
-                </p>
+                </p> */}
                 <div className="flex justify-start items-center gap-2 *:flex-grow">
                   <Link
                     href={`/addItems?name=${collection.name}&id=${collection.id}`}
@@ -191,7 +197,7 @@ export default function CollectionsPage() {
               </div>
             </div>
           ))}
-        </div>
+        </div>) }
 
         {/* Create Collection Modal */}
         {isModalOpen && (

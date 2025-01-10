@@ -19,28 +19,22 @@ import { client, chain } from "@/config/client"
 import { getContract } from "thirdweb";
 
 export default function CollectionsPage() {
-  interface NFT {
-    id: number;
-    name: string;
-    price: string;
-    description: string;
-    image: string;
-    metaUrl: string;
-  }
   const searchParams = useSearchParams();
 
   const id = searchParams.get("id");
   const name = searchParams.get("name");
 
-  const [nfts, setNfts] = useState<NFT[]>([]);
+  const [nfts, setNfts] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [filter, setFilter] = useState("all");
   const account = useActiveAccount();
   const address = useActiveAccount()?.address;
+const [loading, setIsloading] = useState(false);
 
   useEffect(() => {
     async function fetchNFTs() {
+        setIsloading(true);
       try {
         const response = await axios.get("/api/getNFTs", {
           params: {
@@ -51,15 +45,19 @@ export default function CollectionsPage() {
         const metadataFiles = response.data;
         console.log("metadataFiles", metadataFiles);
         setNfts(metadataFiles);
+        setIsloading(false);
       } catch (error) {
         console.log("Error fetching NFTs:", error);
+        setIsloading(false);
         alert(`Error fetching NFTs ${error}`);
       }
     }
     console.log("Fetching NFTs...");
     fetchNFTs();
     console.log("fetched");
+
   }, []);
+
 
   const filteredNFTs = nfts.filter(
     (nft) =>
@@ -1052,7 +1050,11 @@ export default function CollectionsPage() {
           </div>
 
           {/* NFT Grid */}
-          {nfts.length > 0 ? (
+          {loading ? (
+            <div className="flex justify-center items-center h-64">
+              <Spinner size="lg" />
+            </div>
+          ) : nfts.length > 0 ? (
             <div
               className={`grid gap-10 my-10 lg:mx-20 ${
                 viewMode === "grid"
@@ -1074,7 +1076,9 @@ export default function CollectionsPage() {
                     />
                   </CardBody>
                   <CardFooter className="flex flex-col items-start">
-                    <h3 className="text-lg font-semibold">{nft.name}</h3>
+                    <div className="flex flex-row justify-between items-center w-full">
+                    <h3 className="text-lg font-semibold flex">{nft.name}</h3>
+                    <p className="text-xs text-gray-400">Token ID: {nft.tokenId}</p></div>
                     <p className="text-default-500">{nft.description}</p>
                     <Button
                       className="w-full mt-2 transition-colors hover:bg-primary-400"
@@ -1088,8 +1092,8 @@ export default function CollectionsPage() {
               ))}
             </div>
           ) : (
-            <div className="py-12 w-full flex justify-center">
-              <Spinner />
+            <div className="py-12 px-24 my-20 mx-auto bg-gray-950  w-fit flex justify-center">
+              No items added yet
             </div>
           )}
         </div>
