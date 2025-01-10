@@ -1,6 +1,8 @@
 import { NextResponse, type NextRequest } from "next/server";
 
 import { pinata } from "@/utils/config";
+export const dynamic = "force-dynamic";
+
 
 function extractIpfsHash(url: any) {
   try {

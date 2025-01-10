@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { Upload, FileText, AlertCircle } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import axios from "axios";
@@ -19,7 +19,7 @@ interface ValidationError {
   type: "error" | "warning";
 }
 
-export default function AddItemsPage() {
+function AddItemsPageContent() {
   const [images, setImages] = useState<FileWithPreview[]>([]);
   const [metadataFile, setMetadataFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -481,5 +481,14 @@ export default function AddItemsPage() {
         </div>
       </div>
     </div>
+   
+  );
+}
+
+export default function AddItemsPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <AddItemsPageContent />
+    </Suspense>
   );
 }

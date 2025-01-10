@@ -2,7 +2,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
+
 import { pinata } from "@/utils/config";
+export const dynamic = "force-dynamic";
 
 export async function GET(req: NextRequest, res: NextResponse) {
   try {

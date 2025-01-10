@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { Button } from "@nextui-org/button";
 import { Card, CardBody, CardFooter } from "@nextui-org/card";
 import { Input } from "@nextui-org/input";
@@ -19,7 +19,7 @@ import { getContract } from "thirdweb";
 
 import { client, chain } from "@/config/client"
 
-export default function CollectionsPage() {
+function CollectionsPageContent() {
   const searchParams = useSearchParams();
 
   const id = searchParams.get("id");
@@ -1105,4 +1105,12 @@ const [loading, setIsloading] = useState(false);
       </main>
     </div>
   );
+}
+
+export default function CollectionsPage() {
+    return (
+      <Suspense fallback={<div>Loading...</div>}>
+        <CollectionsPageContent />
+      </Suspense>
+    );
 }
