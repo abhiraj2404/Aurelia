@@ -1,6 +1,7 @@
+import { NextRequest, NextResponse } from "next/server";
+
 import dbConnect from "@/utils/dbConnect";
 import Signature from "@/models/signatures";
-import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
   try {
@@ -24,6 +25,7 @@ export async function POST(request: NextRequest) {
     );
   } catch (error) {
     console.error("Error creating collection:", error);
+
     return NextResponse.json(
       { success: false, error: "Failed to create collection" },
       { status: 500 }

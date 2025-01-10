@@ -2,7 +2,6 @@ import { createThirdwebClient } from "thirdweb";
 import { polygonAmoy } from "thirdweb/chains";
 import { inAppWallet } from "thirdweb/wallets";
 import { getContract } from "thirdweb";
-import { get } from "http";
 
 // Replace this with your client ID string
 // refer to https://portal.thirdweb.com/typescript/v5/client on how to get a client ID
@@ -866,4 +865,5 @@ const wallets = [
     },
   }),
 ];
+
 export { client, chain, wallets, EventContract };

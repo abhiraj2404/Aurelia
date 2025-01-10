@@ -1,6 +1,7 @@
+import { NextRequest, NextResponse } from "next/server";
+
 import dbConnect from "@/utils/dbConnect";
 import Collection from "@/models/collections";
-import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
@@ -20,6 +21,7 @@ export async function GET(request: NextRequest) {
       );
     } catch (error) {
       console.error("Error retrieving data:", error);
+
       return NextResponse.json(
         { error: "Failed to retrieve collection data" },
         { status: 500 }

@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
+
 import { pinata } from "@/utils/config";
 
 export async function POST(request: NextRequest) {
@@ -26,6 +27,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(url, { status: 200 });
   } catch (e) {
     console.log(e);
+
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 }

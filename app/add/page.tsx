@@ -29,9 +29,11 @@ export default function AddPage() {
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+
     if (file) {
       setFile(e.target?.files?.[0]);
       const reader = new FileReader();
+
       reader.onloadend = () => {
         setImagePreview(reader.result as string);
       };
@@ -43,17 +45,21 @@ export default function AddPage() {
     try {
       if (!file) {
         alert("No file selected");
+
         return;
       }
 
       const data = new FormData();
+
       data.set("file", file, formData.name);
       const uploadRequest = await fetch("/api/files", {
         method: "POST",
         body: data,
       });
       const signedUrl = await uploadRequest.json();
+
       setUrl(signedUrl);
+
       return signedUrl;
     } catch (e) {
       console.log(e);
@@ -69,6 +75,7 @@ export default function AddPage() {
       });
 
       const metadataFormData = new FormData();
+
       metadataFormData.set(
         "file",
         metadataBlob,
@@ -94,6 +101,7 @@ export default function AddPage() {
     e.preventDefault();
     setUploading(true);
     const imageURL = await uploadFile();
+
     if (imageURL) {
       const metadata = {
         name: formData.name,
@@ -117,7 +125,7 @@ export default function AddPage() {
         information.
       </p>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form className="space-y-6" onSubmit={handleSubmit}>
         <Card>
           <CardBody className="gap-6">
             {/* Image Upload Section */}
@@ -128,14 +136,14 @@ export default function AddPage() {
               {imagePreview ? (
                 <div className="relative">
                   <img
-                    src={imagePreview}
                     alt="NFT Preview"
                     className="max-h-[400px] mx-auto rounded-lg"
+                    src={imagePreview}
                   />
                   <Button
+                    className="absolute top-2 right-2"
                     color="primary"
                     variant="flat"
-                    className="absolute top-2 right-2"
                     onClick={(e) => {
                       e.stopPropagation();
                       setImagePreview(null);
@@ -161,19 +169,19 @@ export default function AddPage() {
               )}
               <input
                 ref={fileInputRef}
-                type="file"
-                className="hidden"
                 accept="image/*,video/mp4"
+                className="hidden"
+                type="file"
                 onChange={handleImageUpload}
               />
             </div>
 
             {/* Collection Selection */}
             <Select
-              label="Collection"
-              placeholder="Choose a collection"
-              labelPlacement="outside"
               isRequired
+              label="Collection"
+              labelPlacement="outside"
+              placeholder="Choose a collection"
               value={formData.collection}
               onChange={(e) =>
                 setFormData({ ...formData, collection: e.target.value })
@@ -188,10 +196,10 @@ export default function AddPage() {
 
             {/* NFT Details */}
             <Input
-              label="Name"
-              placeholder="Name your NFT"
-              labelPlacement="outside"
               isRequired
+              label="Name"
+              labelPlacement="outside"
+              placeholder="Name your NFT"
               value={formData.name}
               onChange={(e) =>
                 setFormData({ ...formData, name: e.target.value })
@@ -209,16 +217,16 @@ export default function AddPage() {
             />
 
             <Input
-              type="number"
+              isRequired
               label="Price (ETH)"
               labelPlacement="outside"
               placeholder="Set your price"
-              isRequired
               startContent={
                 <div className="pointer-events-none flex items-center">
                   <span className="text-default-400 text-small">Ξ</span>
                 </div>
               }
+              type="number"
               value={formData.price}
               onChange={(e) =>
                 setFormData({ ...formData, price: e.target.value })
@@ -226,11 +234,11 @@ export default function AddPage() {
             />
 
             <Button
-              color="primary"
-              size="lg"
               className="w-full"
-              type="submit"
+              color="primary"
               disabled={uploading}
+              size="lg"
+              type="submit"
             >
               {uploading ? "Creating..." : "Create NFT"}
             </Button>

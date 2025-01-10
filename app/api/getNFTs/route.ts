@@ -1,7 +1,8 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import { pinata } from "@/utils/config";
+
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
+
+import { pinata } from "@/utils/config";
 
 export async function GET(req: NextRequest, res: NextResponse) {
   try {
@@ -17,6 +18,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
     }
 
     const files = await pinata.listFiles().pageLimit(100).group(id); // Get list of files
+
     console.log("files from backend fetched");
 
     const jsonFiles = files.filter((file) =>
@@ -25,6 +27,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
 
     const metadataPromises = jsonFiles.map(async (file) => {
       const { data } = await pinata.gateways.get(`${file.ipfs_pin_hash}`);
+
       if (data && typeof data === "object" && !Array.isArray(data)) {
         return {
           ...data!,
@@ -34,9 +37,11 @@ export async function GET(req: NextRequest, res: NextResponse) {
     });
 
     const metadataFiles = await Promise.all(metadataPromises);
+
     return NextResponse.json(metadataFiles, { status: 200 });
   } catch (error) {
     console.error("Error fetching Pinata files:", error);
+
     return NextResponse.json(
       { error: "Internal Server Error" },
       { status: 500 }

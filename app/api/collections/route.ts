@@ -1,6 +1,7 @@
+import { NextRequest, NextResponse } from "next/server";
+
 import dbConnect from "@/utils/dbConnect";
 import Collection from "@/models/collections";
-import { NextRequest, NextResponse } from "next/server";
 import { pinata } from "@/utils/config";
 
 //write post request to create a new collection
@@ -10,6 +11,7 @@ export async function POST(request: NextRequest) {
     await dbConnect();
 
     const { name, image, LazymintingContractAddress } = await request.json();
+
     console.log(LazymintingContractAddress);
     const group = await pinata.groups.create({
       name: name
@@ -23,6 +25,7 @@ export async function POST(request: NextRequest) {
       LazymintingContractAddress,
       itemCount: 0,
     });
+
     console.log(collection)
 
     return NextResponse.json(
@@ -35,6 +38,7 @@ export async function POST(request: NextRequest) {
     );
   } catch (error) {
     console.error("Error creating collection:", error);
+
     return NextResponse.json(
       { success: false, error: "Failed to create collection" },
       { status: 500 }
@@ -58,6 +62,7 @@ export async function GET() {
     );
   } catch (error) {
     console.error("Error retrieving data:", error);
+
     return NextResponse.json(
       { error: "Failed to retrieve collection data" },
       { status: 500 }

@@ -16,12 +16,12 @@ import { Input } from "@nextui-org/input";
 import { link as linkStyles } from "@nextui-org/theme";
 import NextLink from "next/link";
 import clsx from "clsx";
+import { usePathname } from "next/navigation";
 
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { GithubIcon, SearchIcon } from "@/components/icons";
 import { client, chain } from "@/config/client";
-import { usePathname } from "next/navigation";
 
 export const Navbar = () => {
   const pathname = usePathname(); // Get current route path
@@ -85,12 +85,12 @@ export const Navbar = () => {
         {/* <NavbarItem className="hidden lg:flex">{searchInput}</NavbarItem> */}
         <NavbarItem className="hidden md:flex">
           <ConnectButton
-            client={client}
-            chain={chain}
             accountAbstraction={{
               chain: chain,
               sponsorGas: true,
             }}
+            chain={chain}
+            client={client}
           />
         </NavbarItem>
       </NavbarContent>
@@ -112,10 +112,10 @@ export const Navbar = () => {
             return (
               <NavbarMenuItem key={`${item}-${index}`}>
                 <Link
-                  href={item.href}
                   className={`text-lg ${
                     isActive ? "text-primary font-semibold" : "text-foreground"
                   }`}
+                  href={item.href}
                 >
                   {item.label}
                 </Link>
@@ -124,12 +124,12 @@ export const Navbar = () => {
           })}
         </div>
         <ConnectButton
-          client={client}
-          chain={chain}
           accountAbstraction={{
             chain: chain, // the chain where your smart accounts will be or is deployed
             sponsorGas: true, // enable or disable sponsored transactions
           }}
+          chain={chain}
+          client={client}
         />
       </NavbarMenu>
     </NextUINavbar>

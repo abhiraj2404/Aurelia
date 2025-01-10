@@ -1,9 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Upload, FileText, AlertCircle } from "lucide-react";
 import { useSearchParams } from "next/navigation";
-import { ethers } from "ethers";
 import axios from "axios";
 import { useActiveAccount } from "thirdweb/react";
 
@@ -46,6 +45,7 @@ export default function AddItemsPage() {
         preview: URL.createObjectURL(file),
       })
     );
+
     setImages((prev) => [...prev, ...newImages]);
     setErrors([]);
   };
@@ -59,6 +59,7 @@ export default function AddItemsPage() {
         preview: URL.createObjectURL(file),
       })
     );
+
     setImages((prev) => [...prev, ...newImages]);
     setErrors([]);
   };
@@ -76,6 +77,7 @@ export default function AddItemsPage() {
 
     // Check header
     const header = lines[0].toLowerCase();
+
     if (
       !header.includes("tokenid") ||
       !header.includes("name") ||
@@ -86,6 +88,7 @@ export default function AddItemsPage() {
         message: "CSV must have headers: tokenID, name, description, file_name",
         type: "error",
       });
+
       return errors;
     }
 
@@ -93,6 +96,7 @@ export default function AddItemsPage() {
     const headers = header.split(",");
     const tokenIdIndex = headers.indexOf("tokenid");
     const fileNameIndex = headers.indexOf("file_name");
+
     console.log("headers", headers);
 
     // Check data rows
@@ -104,6 +108,7 @@ export default function AddItemsPage() {
 
       // Check tokenID
       const tokenId = parseInt(columns[tokenIdIndex]);
+
       if (isNaN(tokenId)) {
         errors.push({
           message: `Invalid tokenID at row ${i + 1}`,
@@ -131,6 +136,7 @@ export default function AddItemsPage() {
       // Check if image exists
       console.log(columns[fileNameIndex]);
       const fileName = columns[fileNameIndex].trim();
+
       if (!imageFileNames.has(fileName)) {
         errors.push({
           message: `Image file "${fileName}" not found in uploaded images`,
@@ -159,6 +165,7 @@ export default function AddItemsPage() {
       setErrors([
         { message: "Please upload at least one image", type: "error" },
       ]);
+
       return;
     }
 
@@ -166,14 +173,17 @@ export default function AddItemsPage() {
       setErrors([
         { message: "Please upload a metadata CSV file", type: "error" },
       ]);
+
       return;
     }
 
     setIsUploading(true);
     try {
       const validationErrors = await validateCSV(metadataFile);
+
       if (validationErrors.length > 0) {
         setErrors(validationErrors);
+
         return;
       }
 
@@ -270,10 +280,12 @@ export default function AddItemsPage() {
     try {
       if (!file) {
         alert("No file selected");
+
         return;
       }
 
       const data = new FormData();
+
       data.set("file", file, name);
       if (collectionId !== null) {
         data.set("id", collectionId);
@@ -283,6 +295,7 @@ export default function AddItemsPage() {
         body: data,
       });
       const signedUrl = await uploadRequest.json();
+
       return signedUrl;
     } catch (e) {
       console.log(e);
@@ -297,6 +310,7 @@ export default function AddItemsPage() {
       });
 
       const metadataFormData = new FormData();
+
       metadataFormData.set(
         "file",
         metadataBlob,
@@ -340,13 +354,13 @@ export default function AddItemsPage() {
                   ? "border-blue-500 bg-blue-500/10"
                   : "hover:border-gray-500"
               }`}
+              onClick={() => document.getElementById("image-upload")?.click()}
+              onDragLeave={() => setIsDragging(false)}
               onDragOver={(e) => {
                 e.preventDefault();
                 setIsDragging(true);
               }}
-              onDragLeave={() => setIsDragging(false)}
               onDrop={handleImageDrop}
-              onClick={() => document.getElementById("image-upload")?.click()}
             >
               <div className="flex items-center gap-4">
                 <div className="p-3 bg-gray-800 rounded-lg">
@@ -362,11 +376,11 @@ export default function AddItemsPage() {
                 </div>
               </div>
               <input
-                type="file"
                 multiple
                 accept="image/*"
                 className="hidden"
                 id="image-upload"
+                type="file"
                 onChange={handleImageSelect}
               />
             </div>
@@ -380,9 +394,9 @@ export default function AddItemsPage() {
                     className="relative aspect-square rounded-lg overflow-hidden bg-gray-800"
                   >
                     <img
-                      src={file.preview}
                       alt={file.name}
                       className="w-full h-full object-cover"
+                      src={file.preview}
                     />
                   </div>
                 ))}
@@ -416,10 +430,10 @@ export default function AddItemsPage() {
                 </div>
               </div>
               <input
-                type="file"
                 accept=".csv"
                 className="hidden"
                 id="metadata-upload"
+                type="file"
                 onChange={handleMetadataSelect}
               />
             </div>
@@ -453,13 +467,13 @@ export default function AddItemsPage() {
 
             {/* Upload Button */}
             <button
-              onClick={handleUpload}
-              disabled={isUploading || !images.length || !metadataFile}
               className={`w-full py-3 px-4 rounded-lg font-semibold transition-colors ${
                 isUploading || !images.length || !metadataFile
                   ? "bg-blue-600/50 cursor-not-allowed"
                   : "bg-blue-600 hover:bg-blue-700"
               }`}
+              disabled={isUploading || !images.length || !metadataFile}
+              onClick={handleUpload}
             >
               {isUploading ? "Uploading..." : "Upload Collection"}
             </button>

@@ -11,12 +11,13 @@ import {
   DropdownTrigger,
 } from "@nextui-org/dropdown";
 import { useActiveAccount } from "thirdweb/react";
-import { sendTransaction, prepareContractCall, sendAndConfirmTransaction } from "thirdweb";
+import { prepareContractCall, sendAndConfirmTransaction } from "thirdweb";
 import { Spinner } from "@nextui-org/spinner";
 import axios from "axios";
 import { useSearchParams } from "next/navigation";
-import { client, chain } from "@/config/client"
 import { getContract } from "thirdweb";
+
+import { client, chain } from "@/config/client"
 
 export default function CollectionsPage() {
   const searchParams = useSearchParams();
@@ -43,6 +44,7 @@ const [loading, setIsloading] = useState(false);
         });
 
         const metadataFiles = response.data;
+
         console.log("metadataFiles", metadataFiles);
         setNfts(metadataFiles);
         setIsloading(false);
@@ -935,6 +937,7 @@ const [loading, setIsloading] = useState(false);
       });
 
       const voucher = await uploadRequest.json();
+
       console.log(voucher);
       console.log("Voucher received:", voucher);
       const transaction = prepareContractCall({
@@ -948,6 +951,7 @@ const [loading, setIsloading] = useState(false);
           account,
           transaction,
         });
+
         console.log(
           "Minting successfull , transaction hash :",
           transactionHash
@@ -964,6 +968,7 @@ const [loading, setIsloading] = useState(false);
             method: "POST",
             body: JSON.stringify(nftData),
           });
+
         alert("Minting successfull , check your wallet for transaction status");
       } else {
         alert("Please connect your wallet to mint the NFT");
@@ -1004,15 +1009,15 @@ const [loading, setIsloading] = useState(false);
             />
             <div className="flex gap-2">
               <Button
-                variant={viewMode === "grid" ? "solid" : "flat"}
                 isIconOnly
+                variant={viewMode === "grid" ? "solid" : "flat"}
                 onClick={() => setViewMode("grid")}
               >
                 <LayoutGrid size={20} />
               </Button>
               <Button
-                variant={viewMode === "list" ? "solid" : "flat"}
                 isIconOnly
+                variant={viewMode === "list" ? "solid" : "flat"}
                 onClick={() => setViewMode("list")}
               >
                 <List size={20} />
@@ -1020,9 +1025,9 @@ const [loading, setIsloading] = useState(false);
               <Dropdown>
                 <DropdownTrigger>
                   <Button
-                    variant="flat"
                     className="capitalize"
                     endContent={<ChevronDownIcon className="text-small" />}
+                    variant="flat"
                   >
                     {filter === "all"
                       ? "All Prices"
@@ -1032,11 +1037,11 @@ const [loading, setIsloading] = useState(false);
                   </Button>
                 </DropdownTrigger>
                 <DropdownMenu
-                  aria-label="Filter by price"
-                  variant="flat"
                   disallowEmptySelection
-                  selectionMode="single"
+                  aria-label="Filter by price"
                   selectedKeys={[filter]}
+                  selectionMode="single"
+                  variant="flat"
                   onSelectionChange={(keys) =>
                     setFilter(Array.from(keys)[0] as string)
                   }
@@ -1065,14 +1070,14 @@ const [loading, setIsloading] = useState(false);
               {filteredNFTs.map((nft, index) => (
                 <Card
                   key={index}
-                  className="hover:scale-105 transition-transform"
                   isPressable
+                  className="hover:scale-105 transition-transform"
                 >
                   <CardBody className="p-0">
                     <img
-                      src={nft.image}
                       alt={nft.name}
                       className={`w-full ${viewMode === "grid" ? "h-[300px]" : "h-[200px]"} object-cover`}
+                      src={nft.image}
                     />
                   </CardBody>
                   <CardFooter className="flex flex-col items-start">

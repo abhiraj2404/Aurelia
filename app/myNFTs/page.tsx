@@ -13,7 +13,6 @@ import {
 import { Search, List, LayoutGrid, Settings } from "lucide-react";
 import { Avatar } from "@nextui-org/avatar";
 import { useActiveAccount } from "thirdweb/react";
-import { useReadContract } from "thirdweb/react";
 import axios from "axios";
 import { Spinner } from "@nextui-org/spinner";
 
@@ -123,8 +122,8 @@ export default function MyNFTsPage() {
       {/* Profile Section */}
       <div className="flex items-center gap-4 mb-8">
         <Avatar
-          src="/placeholder.svg?height=100&width=100"
           className="w-24 h-24"
+          src="/placeholder.svg?height=100&width=100"
         />
         <div>
           <h1 className="text-2xl font-bold">Unnamed</h1>
@@ -139,23 +138,23 @@ export default function MyNFTsPage() {
       {/* Search and Filters */}
       <div className="flex flex-col my-10 lg:mx-20 sm:flex-row gap-4 mb-8 justify-between items-start sm:items-center">
         <Input
+          className="w-full sm:w-[400px]"
           placeholder="Search your NFTs..."
+          startContent={<Search className="text-default-400" size={20} />}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          startContent={<Search className="text-default-400" size={20} />}
-          className="w-full sm:w-[400px]"
         />
         <div className="flex gap-2">
           <Button
-            variant={viewMode === "grid" ? "solid" : "flat"}
             isIconOnly
+            variant={viewMode === "grid" ? "solid" : "flat"}
             onClick={() => setViewMode("grid")}
           >
             <LayoutGrid size={20} />
           </Button>
           <Button
-            variant={viewMode === "list" ? "solid" : "flat"}
             isIconOnly
+            variant={viewMode === "list" ? "solid" : "flat"}
             onClick={() => setViewMode("list")}
           >
             <List size={20} />
@@ -186,14 +185,14 @@ export default function MyNFTsPage() {
         {filteredNFTs.reverse().map((nft, index) => (
           <Card
             key={index}
-            className="hover:scale-105 transition-transform"
             isPressable
+            className="hover:scale-105 transition-transform"
           >
             <CardBody className="p-0">
               <img
-                src={nft.image}
                 alt={nft.name}
                 className={`w-full ${viewMode === "grid" ? "h-[300px]" : "h-[200px]"} object-cover`}
+                src={nft.image}
               />
             </CardBody>
             <CardFooter className="flex flex-col items-start">

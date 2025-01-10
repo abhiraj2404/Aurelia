@@ -14,9 +14,9 @@ function HeroSection() {
           blockchain.
         </p>
         <Button
-          size="lg"
-          color="secondary"
           className="transition-all hover:scale-105 hover:bg-secondary-400"
+          color="secondary"
+          size="lg"
         >
           Learn How to Mint
         </Button>

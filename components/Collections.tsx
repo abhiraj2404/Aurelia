@@ -18,6 +18,7 @@ function Collections() {
     try {
       const response = await fetch("/api/collections");
       const res = await response.json();
+
       console.log(res.data);
       setCollections(res.data);
       setIsloading(false);
@@ -43,24 +44,24 @@ function Collections() {
         {collections.map((collection) => (
           <Card
             key={collection.id}
-            onPress={() => console.log(`Clicked ${collection.name}`)}
             className="transition-all hover:scale-105 hover:shadow-lg"
+            onPress={() => console.log(`Clicked ${collection.name}`)}
           >
             
             <CardBody className="p-0 aspect-video relative overflow-hidden">
               <Image
-                src={collection.image}
                 alt={collection.name}
                 className="w-full h-full object-cover"
+                src={collection.image}
               />
             </CardBody>
             <CardFooter className="flex flex-col items-start">
               <h3 className="text-xl font-semibold">{collection.name}</h3>
               <Button
-                color="primary"
-                variant="flat"
-                size="sm"
                 className="mt-2 transition-colors hover:bg-primary-400"
+                color="primary"
+                size="sm"
+                variant="flat"
                 onPress={() =>
                   router.push(
                     `/CollectionItems?name=${collection.name}&id=${collection.id}`
